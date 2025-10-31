@@ -1,0 +1,94 @@
+[
+  {
+    "WorkspacesChanged": {
+      "workspaces": [
+        {
+          "id": 6,
+          "idx": 2,
+          "name": null,
+          "output": "Virtual-1",
+          "is_urgent": false,
+          "is_active": true,
+          "is_focused": true,
+          "active_window_id": 12
+        },
+        {
+          "id": 8,
+          "idx": 1,
+          "name": null,
+          "output": "Virtual-1",
+          "is_urgent": false,
+          "is_active": false,
+          "is_focused": false,
+          "active_window_id": null
+        },
+        {
+          "id": 4,
+          "idx": 3,
+          "name": null,
+          "output": "Virtual-1",
+          "is_urgent": false,
+          "is_active": false,
+          "is_focused": false,
+          "active_window_id": null
+        }
+      ]
+    }
+  },
+  {
+    "WindowsChanged": {
+      "windows": [
+        {
+          "id": 9,
+          "title": "Ghostty",
+          "app_id": "com.mitchellh.ghostty",
+          "pid": 9873,
+          "workspace_id": 6,
+          "is_focused": false,
+          "is_floating": false,
+          "is_urgent": false,
+          "layout": {
+            "pos_in_scrolling_layout": [2, 1],
+            "tile_size": [761.0, 1029.0],
+            "window_size": [757, 1025],
+            "tile_pos_in_workspace_view": null,
+            "window_offset_in_tile": [2.0, 2.0]
+          }
+        },
+        {
+          "id": 12,
+          "title": "Ghostty",
+          "app_id": "com.mitchellh.ghostty",
+          "pid": 9873,
+          "workspace_id": 6,
+          "is_focused": true,
+          "is_floating": false,
+          "is_urgent": false,
+          "layout": {
+            "pos_in_scrolling_layout": [1, 1],
+            "tile_size": [761.0, 1029.0],
+            "window_size": [757, 1025],
+            "tile_pos_in_workspace_view": null,
+            "window_offset_in_tile": [2.0, 2.0]
+          }
+        }
+      ]
+    }
+  },
+  {
+    "KeyboardLayoutsChanged": {
+      "keyboard_layouts": {
+        "names": ["English (US)", "English (US, intl., with dead keys)"],
+        "current_idx": 0
+      }
+    }
+  },
+  { "OverviewOpenedOrClosed": { "is_open": false } },
+  {
+    "WorkspaceActiveWindowChanged": {
+      "workspace_id": 6,
+      "active_window_id": 12
+    }
+  },
+  { "WindowFocusChanged": { "id": 12 } }
+]
