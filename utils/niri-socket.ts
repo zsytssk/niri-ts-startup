@@ -41,23 +41,23 @@ export function niriSend(obj: any) {
   });
 }
 
-export function niriSendGetRes(obj: any) {
-  return new Promise((resolve, reject) => {
+export function niriSendGetArr(arr: Array<any>) {
+  return new Promise<void>((resolve, reject) => {
     const client = net.createConnection({ path: SOCKET_PATH! }, () => {
-      let buffer = "";
-      client.write(JSON.stringify(obj) + "\n", (err) => {
-        if (err) reject(err);
-        // client.end();
-      });
+      const taskList = [] as Promise<any>[];
+      for (const obj of arr) {
+        const task = new Promise<void>((resolve) => {
+          client.write(JSON.stringify(obj) + "\n", (err) => {
+            if (err) reject(err);
+            resolve();
+          });
+        });
+        taskList.push(task);
+      }
 
-      client.on("data", (chunk) => {
-        buffer += chunk.toString();
-
-        // 按行处理
-        let lines = buffer.split("\n");
-        buffer = lines.pop()!; // 保留最后可能不完整的一行
-
-        resolve(JSON.parse(lines[0]));
+      Promise.all(taskList).then(() => {
+        client.end();
+        resolve();
       });
     });
   });

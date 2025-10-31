@@ -5,6 +5,7 @@ curl -X POST http://127.0.0.1:6321/runApp -H "Content-Type: application/json" -d
 
 niri msg dump-tree | jq '.windows[] | {title, app_id}'
 
+"curl -X POST http://127.0.0.1:6321/spad -d '{\"name\":\"term\"}'"
 
 
 {"WorkspacesChanged":{"workspaces":[{"id":6,"idx":2,"name":null,"output":"Virtual-1","is_urgent":false,"is_active":true,"is_focused":true,"active_window_id":12},{"id":8,"idx":1,"name":null,"output":"Virtual-1","is_urgent":false,"is_active":false,"is_focused":false,"active_window_id":null},{"id":4,"idx":3,"name":null,"output":"Virtual-1","is_urgent":false,"is_active":false,"is_focused":false,"active_window_id":null}]}}

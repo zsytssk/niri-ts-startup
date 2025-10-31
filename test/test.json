@@ -3,17 +3,17 @@
     "WorkspacesChanged": {
       "workspaces": [
         {
-          "id": 6,
-          "idx": 2,
+          "id": 5,
+          "idx": 3,
           "name": null,
           "output": "Virtual-1",
           "is_urgent": false,
-          "is_active": true,
-          "is_focused": true,
-          "active_window_id": 12
+          "is_active": false,
+          "is_focused": false,
+          "active_window_id": null
         },
         {
-          "id": 8,
+          "id": 3,
           "idx": 1,
           "name": null,
           "output": "Virtual-1",
@@ -23,14 +23,14 @@
           "active_window_id": null
         },
         {
-          "id": 4,
-          "idx": 3,
+          "id": 1,
+          "idx": 2,
           "name": null,
           "output": "Virtual-1",
           "is_urgent": false,
-          "is_active": false,
-          "is_focused": false,
-          "active_window_id": null
+          "is_active": true,
+          "is_focused": true,
+          "active_window_id": 2
         }
       ]
     }

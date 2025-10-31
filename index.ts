@@ -1,59 +1,46 @@
 import Bun from "bun";
 import { powerActions } from "./command/powerActions";
+import { runApp } from "./command/runApp";
+import { spad } from "./command/spad";
 import { NiriState } from "./state";
-import { excuse } from "./utils/exec";
-import { niriSend } from "./utils/niri-socket";
-import { sleep } from "./utils/utils";
 
-const { stop, filterWindow, ...state } = NiriState();
+const {
+  filterWindow,
+  waitWindowOpen,
+  isWindowInView,
+  getNotActiveWorkspace,
+  getActiveWorkspaceId,
+  ...state
+} = NiriState();
+
+export const niriFilterWindow = filterWindow;
+export const niriWaitWindowOpen = waitWindowOpen;
+export const niriGetNotActiveWorkspace = getNotActiveWorkspace;
+export const niriIsWindowInView = isWindowInView;
+export const niriGetActiveWorkspaceId = getActiveWorkspaceId;
+
 async function main() {
   Bun.serve({
     port: 6321,
     fetch: async (req: Response) => {
       const url = new URL(req.url);
-
-      if (url.pathname === "/powerOptions") {
-        await powerActions();
-        return new Response("OK", { status: 200 });
-      } else if (url.pathname === "/getState") {
-        await sleep(1);
-        return Response.json("OK", { status: 200 });
-      } else if (url.pathname === "/runApp") {
-        const data = await req.json(); // 解析 JSON body
-        const { title, app_id, cmd } = data;
-        const apps = filterWindow((item) => {
-          if (title) {
-            return item.title === title;
-          }
-          if (app_id) {
-            return item.app_id === app_id;
-          }
-          return false;
-        });
-        if (!apps.length) {
-          excuse(cmd, {});
-        } else {
-          for (const item of apps) {
-            if (!item.is_focused) {
-              await niriSend({
-                Action: {
-                  FocusWindow: { id: item.id },
-                },
-              });
-              await niriSend({
-                Action: {
-                  CenterWindow: { id: item.id },
-                },
-              });
-              break;
-            }
-          }
-        }
-
-        return Response.json("OK", { status: 200 });
+      switch (url.pathname) {
+        case "/powerOptions":
+          await powerActions();
+          break;
+        case "/spad":
+          await spad(req);
+          break;
+        case "/runApp":
+          await runApp(req);
+          break;
+        default:
+          console.log(`state:>`, state);
+          break;
       }
 
-      return new Response("404 Not Found", { status: 404 });
+      return Response.json("OK", { status: 200 });
+      //  return new Response("404 Not Found", { status: 404 });
     },
   });
 }
