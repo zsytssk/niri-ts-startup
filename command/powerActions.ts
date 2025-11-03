@@ -10,11 +10,16 @@ export async function powerActions() {
     return;
   }
   if (result == "🔚 Logout") {
-    excuse("niri msg action quit", {});
+    excuse("niri msg action quit --skip-confirmation", {});
     return;
   }
   if (result == "🔄 Reboot") {
     excuse("reboot", {});
+    return;
+  }
+  if (result == "⛔ Shutdown") {
+    // "shutdown" "-h" "now"
+    excuse("shutdown -h now", {});
     return;
   }
 }

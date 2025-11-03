@@ -3,6 +3,7 @@ import { powerActions } from "./command/powerActions";
 import { runApp } from "./command/runApp";
 import { spad } from "./command/spad";
 import { NiriState } from "./state";
+import { actions } from "./command/actions";
 
 const {
   filterWindow,
@@ -27,6 +28,12 @@ async function main() {
       switch (url.pathname) {
         case "/powerOptions":
           await powerActions();
+          break;
+        case "/spad":
+          await spad(req);
+          break;
+        case "/actions":
+          await actions(req);
           break;
         case "/spad":
           await spad(req);
