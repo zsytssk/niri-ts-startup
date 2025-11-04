@@ -8,17 +8,19 @@ import { actions } from "./command/actions";
 const {
   filterWindow,
   waitWindowOpen,
-  isWindowInView,
-  getNotActiveWorkspace,
+  isWindowWorkspaceFocus,
+  getOutputOtherWorkspace,
   getActiveWorkspaceId,
+  getWindowOutput,
   ...state
 } = NiriState();
 
 export const niriFilterWindow = filterWindow;
 export const niriWaitWindowOpen = waitWindowOpen;
-export const niriGetNotActiveWorkspace = getNotActiveWorkspace;
-export const niriIsWindowInView = isWindowInView;
+export const niriGetOutputOtherWorkspace = getOutputOtherWorkspace;
+export const niriIsWindowWorkspaceFocus = isWindowWorkspaceFocus;
 export const niriGetActiveWorkspaceId = getActiveWorkspaceId;
+export const niriGetWindowOutput = getWindowOutput;
 
 async function main() {
   Bun.serve({

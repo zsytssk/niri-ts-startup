@@ -1,8 +1,8 @@
 import {
   niriFilterWindow,
   niriGetActiveWorkspaceId,
-  niriGetNotActiveWorkspace,
-  niriIsWindowInView,
+  niriGetOutputOtherWorkspace,
+  niriIsWindowWorkspaceFocus,
 } from "..";
 import { excuse } from "../utils/exec";
 import { niriSend } from "../utils/niri-socket";
@@ -93,8 +93,8 @@ export async function spad(req: Response) {
     return;
   }
 
-  if (niriIsWindowInView(item)) {
-    const otherWorkspace = niriGetNotActiveWorkspace();
+  if (niriIsWindowWorkspaceFocus(item)) {
+    const otherWorkspace = niriGetOutputOtherWorkspace(item.workspace_id);
 
     await niriSend({
       Action: {
