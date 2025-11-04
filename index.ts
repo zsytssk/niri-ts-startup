@@ -35,9 +35,6 @@ async function main() {
         case "/actions":
           await actions(req);
           break;
-        case "/spad":
-          await spad(req);
-          break;
         case "/runApp":
           await runApp(req);
           break;

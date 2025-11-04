@@ -5,7 +5,7 @@ type Opts = {
   path?: string;
   output?: boolean;
 };
-export function excuse(command: string, opts: Opts) {
+export function excuse(command: string, opts: Opts = {}) {
   const { path, output } = opts;
   const config: any = { maxBuffer: 1024 * 1024 * 100, encoding: "utf-8" };
   if (path) {

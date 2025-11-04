@@ -15,7 +15,7 @@ export function NiriState() {
     }
   };
   const stop = niriEventStream((obj) => {
-    // console.log(`test:>`, JSON.stringify(obj));
+    console.log(`test:>`, JSON.stringify(obj));
     const action = Object.keys(obj)[0];
     for (const item of listeners) {
       item(action, obj);

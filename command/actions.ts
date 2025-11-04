@@ -1,3 +1,4 @@
+import { excuse } from "../utils/exec";
 import { niriSend } from "../utils/niri-socket";
 
 export async function actions(req: Response) {
@@ -16,6 +17,16 @@ export async function actions(req: Response) {
           CenterColumn: {},
         },
       });
+      break;
+    case "toggle-input":
+      const cur = await excuse("fcitx5-remote");
+      if (cur == "2") {
+        await excuse("fcitx5-remote -c");
+      } else {
+        await excuse("fcitx5-remote -o");
+      }
+      break;
+    case "swith-screen":
       break;
   }
 }

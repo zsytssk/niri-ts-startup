@@ -24,10 +24,55 @@ const SpadMap = {
     width: 1200,
   },
 
+  jobNote: {
+    cmd: `ghostty --title="JobNote" --class="jobNote.ghostty" --x11-instance-name=jobNote --working-directory=/home/zsy/Documents/zsy/github/jobNote -e nvim`,
+    match: (item: any) => item.app_id == "jobNote.ghostty",
+    height: 600,
+    width: 1200,
+  },
+
+  youdao: {
+    cmd: `google-chrome-stable --app-id="dbgilkgiemncodkddegnikoceledjgho"`,
+    match: (item: any) =>
+      item.app_id == "chrome-dbgilkgiemncodkddegnikoceledjgho-Default",
+    height: 600,
+    width: 1200,
+  },
+
   doubao: {
     cmd: `google-chrome-stable --app-id="nfjhphkhjelhenadmhihghlkccjdpdkk"`,
     match: (item: any) =>
       item.app_id == "chrome-nfjhphkhjelhenadmhihghlkccjdpdkk-Default",
+    height: 600,
+    width: 1200,
+  },
+
+  deepseek: {
+    cmd: `google-chrome-stable --app-id="hmjcdonmhijmnefklekckjkeoknbiipb"`,
+    match: (item: any) =>
+      item.app_id == "chrome-hmjcdonmhijmnefklekckjkeoknbiipb-Default",
+    height: 600,
+    width: 1200,
+  },
+
+  chatgpt: {
+    cmd: `google-chrome-stable --app-id="cadlkienfkclaiaibeoongdcgmdikeeg"`,
+    match: (item: any) =>
+      item.app_id == "chrome-cadlkienfkclaiaibeoongdcgmdikeeg-Default",
+    height: 600,
+    width: 1200,
+  },
+
+  explorer: {
+    cmd: `ghostty --title="ExplorerPop" --class="explorerPop.ghostty" --x11-instance-name="explorerPop" -e yazi`,
+    match: (item: any) => item.app_id == "explorerPop.ghostty",
+    height: 600,
+    width: 1200,
+  },
+
+  tip: {
+    cmd: `ghostty --title="Tip" --class="tip.ghostty" --x11-instance-name=tip --working-directory=/home/zsy/Documents/zsy/github/jobNote -e nvim ./tip.md`,
+    match: (item: any) => item.app_id == "tip.ghostty",
     height: 600,
     width: 1200,
   },
