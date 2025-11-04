@@ -1,5 +1,6 @@
-import { excuse } from "../utils/exec";
-import { niriSend } from "../utils/niri-socket";
+import { excuse } from "../../utils/exec";
+import { niriSendAction, niriSendActionArr } from "../../utils/niri-socket";
+import { swithScreen } from "./swith-screen";
 
 export async function actions(req: Response) {
   const data = await req.json(); // 解析 JSON body
@@ -7,16 +8,7 @@ export async function actions(req: Response) {
 
   switch (action) {
     case "next-column-center":
-      await niriSend({
-        Action: {
-          FocusColumnRightOrFirst: {},
-        },
-      });
-      await niriSend({
-        Action: {
-          CenterColumn: {},
-        },
-      });
+      await niriSendAction({ FocusColumnRightOrFirst: {} });
       break;
     case "toggle-input":
       const cur = await excuse("fcitx5-remote");
@@ -27,6 +19,7 @@ export async function actions(req: Response) {
       }
       break;
     case "swith-screen":
+      swithScreen();
       break;
   }
 }

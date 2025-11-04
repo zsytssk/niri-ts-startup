@@ -3,24 +3,9 @@ import { powerActions } from "./command/powerActions";
 import { runApp } from "./command/runApp";
 import { spad } from "./command/spad";
 import { NiriState } from "./state";
-import { actions } from "./command/actions";
+import { actions } from "./command/actions/actions";
 
-const {
-  filterWindow,
-  waitWindowOpen,
-  isWindowWorkspaceFocus,
-  getOutputOtherWorkspace,
-  getActiveWorkspaceId,
-  getWindowOutput,
-  ...state
-} = NiriState();
-
-export const niriFilterWindow = filterWindow;
-export const niriWaitWindowOpen = waitWindowOpen;
-export const niriGetOutputOtherWorkspace = getOutputOtherWorkspace;
-export const niriIsWindowWorkspaceFocus = isWindowWorkspaceFocus;
-export const niriGetActiveWorkspaceId = getActiveWorkspaceId;
-export const niriGetWindowOutput = getWindowOutput;
+export const state = NiriState();
 
 async function main() {
   Bun.serve({

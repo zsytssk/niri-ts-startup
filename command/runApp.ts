@@ -1,42 +1,45 @@
-import { niriFilterWindow } from "..";
+import { state } from "..";
 import { excuse } from "../utils/exec";
-import { niriSend } from "../utils/niri-socket";
+import { niriSendActionArrSequence } from "../utils/niri-socket";
 
 export async function runApp(req: Response) {
   try {
     const data = await req.json(); // 解析 JSON body
     // console.log(`test:>runApp`);
     const { title, app_id, cmd } = data;
-    const apps = niriFilterWindow((item) => {
+    const filterFn = (item: any) => {
       if (title) {
-        return item.title === title;
+        const titleList = title.split("|");
+        return titleList.includes(item.title);
       }
       if (app_id) {
-        return item.app_id === app_id;
+        const idList = app_id.split("|");
+        return idList.includes(item.app_id);
       }
       return false;
-    });
+    };
+    const apps = state.filterWindow(filterFn);
+    let item: any;
     if (!apps.length) {
-      excuse(cmd, {});
-      return;
+      await excuse(cmd, {});
+      item = await state.waitWindowOpen(filterFn);
+    } else {
+      const index = apps.findIndex((item) => item.is_focused) || -1;
+      // console.log(`test:>runApp`, index, apps.length);
+      let nextIndex = index + 1;
+      if (nextIndex >= apps.length) {
+        nextIndex = 0;
+      }
+      item = apps[nextIndex];
     }
-    const index = apps.findIndex((item) => item.is_focused);
-    // console.log(`test:>runApp`, index, apps.length);
-    let nextIndex = index + 1;
-    if (nextIndex >= apps.length) {
-      nextIndex = 0;
-    }
-    const item = apps[nextIndex];
-    await niriSend({
-      Action: {
+    await niriSendActionArrSequence([
+      {
         FocusWindow: { id: item.id },
       },
-    });
-    await niriSend({
-      Action: {
+      {
         CenterWindow: { id: item.id },
       },
-    });
+    ]);
   } catch (err) {
     console.log(`test:>`, 123213, err);
   }

@@ -1,6 +1,7 @@
 import { niriEventStream } from "./utils/niri-socket";
 
 export function NiriState() {
+  let outputs = new Set<string>();
   let workspaces = new Map<number, any>();
   let windows = new Map<number, any>();
   let currentWindowId: number | undefined = undefined;
@@ -10,12 +11,18 @@ export function NiriState() {
 
   const setCurWindowId = (curId: number) => {
     currentWindowId = curId;
-    const workspace_id = windows.get(curId).workspace_id;
-    for (const [_, item] of windows) {
-      item.is_focused = item.id === curId;
+    const curWindow = windows.get(curId);
+    if (curId) {
+      const workspace_id = curWindow.workspace_id;
+      for (const [_, item] of windows) {
+        item.is_focused = item.id === curId;
+      }
+      if (workspace_id) {
+        setActiveWorkspace(workspace_id, true);
+      }
     }
-    if (workspace_id) {
-      setActiveWorkspace(workspace_id, true);
+    for (const item of listeners) {
+      item("FocusWindow", curWindow);
     }
   };
 
@@ -24,7 +31,7 @@ export function NiriState() {
   };
 
   const setActiveWorkspace = (curId: number, focus = false) => {
-    const output = workspaces.get(curId).output;
+    const output = workspaces.get(curId)?.output;
     if (!output) {
       return;
     }
@@ -51,7 +58,6 @@ export function NiriState() {
   };
 
   const stop = niriEventStream((obj) => {
-    console.log(`test:>`, JSON.stringify(obj));
     const action = Object.keys(obj)[0];
     for (const item of listeners) {
       item(action, obj);
@@ -59,6 +65,7 @@ export function NiriState() {
     switch (action) {
       case "WorkspacesChanged":
         workspaces.clear();
+        outputs.clear();
         for (const item of obj.WorkspacesChanged.workspaces || []) {
           if (item.is_active) {
             // 先等所有的workspace记录之后再去设置当前id
@@ -67,6 +74,9 @@ export function NiriState() {
             });
           }
           workspaces.set(item.id, item);
+          if (!outputs.has(item.output)) {
+            outputs.add(item.output);
+          }
         }
         break;
       case "WorkspaceActivated":
@@ -79,7 +89,9 @@ export function NiriState() {
         for (const item of obj.WindowsChanged.windows || []) {
           windows.set(item.id, item);
           if (item.is_focused) {
-            setCurWindowId(item.id);
+            setTimeout(() => {
+              setCurWindowId(item.id);
+            });
           }
         }
         break;
@@ -97,7 +109,7 @@ export function NiriState() {
         }
         break;
       case "WindowFocusChanged":
-        setCurWindowId(obj.WindowFocusChanged.id);
+        setCurWindowId(obj.WindowFocusChanged.id || undefined);
         break;
     }
   });
@@ -114,14 +126,29 @@ export function NiriState() {
 
   const getOutputOtherWorkspace = (workspace_id: number) => {
     const output = workspaces.get(workspace_id).output;
+    const hasWindowWorkspace = [] as any[];
+    const noWindowWorkspace = [] as any[];
     for (const [key, item] of workspaces) {
-      if (item.output !== output) {
+      if (item.output !== output || item.id === workspace_id) {
         continue;
       }
-      if (item.id !== workspace_id) {
-        return item;
+      let hasWin = false;
+      for (const [, win] of windows) {
+        if (win.workspace_id === item.id) {
+          hasWin = true;
+          break;
+        }
+      }
+      if (hasWin) {
+        hasWindowWorkspace.push(item);
+      } else {
+        noWindowWorkspace.push(item);
       }
     }
+    if (hasWindowWorkspace.length) {
+      return hasWindowWorkspace[0];
+    }
+    return noWindowWorkspace[0];
   };
 
   const isWindowWorkspaceFocus = (item: any) => {
@@ -149,17 +176,40 @@ export function NiriState() {
     });
   };
 
+  const onWindowBlur = (item: any, fn: () => any) => {
+    const localFn = (name: string, obj: any) => {
+      if (name === "FocusWindow") {
+        if (obj?.id !== item.id) {
+          fn();
+          listeners.delete(localFn);
+        }
+      }
+    };
+    listeners.add(localFn);
+
+    return () => {
+      listeners.delete(localFn);
+    };
+  };
+
   return {
+    outputs,
     workspaces,
     windows,
-    currentWindowId: currentWindowId,
     getWindowOutput,
     overviewOpen,
     filterWindow,
     waitWindowOpen,
+    onWindowBlur,
     getOutputOtherWorkspace,
     getActiveWorkspaceId,
     isWindowWorkspaceFocus,
+    get currentWorkspaceId() {
+      return currentWorkspaceId;
+    },
+    get currentWindowId() {
+      return currentWorkspaceId;
+    },
     // onBlur,
     stop,
   };

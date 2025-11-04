@@ -41,13 +41,26 @@ export function niriSend(obj: any) {
   });
 }
 
-export function niriSendGetArr(arr: Array<any>) {
+export function niriSendAction(obj: any) {
   return new Promise<void>((resolve, reject) => {
     const client = net.createConnection({ path: SOCKET_PATH! }, () => {
+      client.write(JSON.stringify({ Action: obj }) + "\n", (err) => {
+        if (err) reject(err);
+        client.end();
+        resolve();
+      });
+    });
+  });
+}
+
+// 同时发送多个命令
+export function niriSendActionArr(arr: Array<any>) {
+  return new Promise<void>((resolve, reject) => {
+    const client = net.createConnection({ path: SOCKET_PATH! }, async () => {
       const taskList = [] as Promise<any>[];
       for (const obj of arr) {
         const task = new Promise<void>((resolve) => {
-          client.write(JSON.stringify(obj) + "\n", (err) => {
+          client.write(JSON.stringify({ Action: obj }) + "\n", (err) => {
             if (err) reject(err);
             resolve();
           });
@@ -59,6 +72,26 @@ export function niriSendGetArr(arr: Array<any>) {
         client.end();
         resolve();
       });
+    });
+  });
+}
+
+// 一个一个的发送命令
+export function niriSendActionArrSequence(arr: Array<any>) {
+  return new Promise<void>((resolve, reject) => {
+    const client = net.createConnection({ path: SOCKET_PATH! }, async () => {
+      for (const obj of arr) {
+        await new Promise<void>((resolve) => {
+          client.write(JSON.stringify({ Action: obj }) + "\n", (err) => {
+            if (err) reject(err);
+            setTimeout(() => {
+              resolve();
+            }, 10);
+          });
+        });
+      }
+      resolve();
+      client.end();
     });
   });
 }

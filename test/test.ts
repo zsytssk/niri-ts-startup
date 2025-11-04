@@ -15,23 +15,23 @@ const client = net.createConnection({ path: SOCKET_PATH }, () => {
   //   }
   // );
   client.write(
-    JSON.stringify({ Action: { FocusWindow: { id: 3 } } }) + "\n",
+    JSON.stringify({ Action: { FocusWindow: { id: 8 } } }) + "\n",
     (err) => {
       if (err) throw err;
-      client.end();
-    }
+      // client.end();
+    },
   );
-  // client.write(
-  //   JSON.stringify({
-  //     Action: {
-  //       Screenshot: { show_pointer: true },
-  //     },
-  //   }) + "\n",
-  //   (err) => {
-  //     if (err) throw err;
-  //     client.end();
-  //   }
-  // );
+  client.write(
+    JSON.stringify({
+      Action: {
+        Screenshot: { show_pointer: true },
+      },
+    }) + "\n",
+    (err) => {
+      if (err) throw err;
+      // client.end();
+    },
+  );
   // client.write(
   //   JSON.stringify({
   //     Action: {
