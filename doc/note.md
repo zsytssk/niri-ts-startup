@@ -1,5 +1,15 @@
+## 2025-11-05 09:27:11
+
+socket 断线重联
+chrome 快捷键提示
+
+## 2025-11-05 09:27:05
+
+chrome://flags/#hardware-media-key-handling
+
+---
+
 spad
-hyprpanel
 
 ## 2025-10-30 14:17:19
 
@@ -41,13 +51,11 @@ window-rule {
 ---
 
 - @ques scratchpad 是怎么实现的
-
   - 打开 | 关闭
 
 ## 2025-10-30 13:24:55
 
 - @ques 怎么隐藏显示这个窗口
-
   - 直接打开放在末尾?
 
 [通过 socket 传递参数](https://yalter.github.io/niri/niri_ipc/enum.Action.html)

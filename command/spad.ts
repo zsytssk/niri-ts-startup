@@ -128,6 +128,9 @@ export async function spad(req: Response) {
     {
       FocusWindow: { id: item.id },
     },
+    {
+      CenterWindow: { id: item.id },
+    },
   ]);
   item.workspace_id = state.getActiveWorkspaceId();
 
