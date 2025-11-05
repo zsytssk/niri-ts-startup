@@ -1,5 +1,5 @@
 import { excuse } from "../../utils/exec";
-import { niriSendAction, niriSendActionArr } from "../../utils/niri-socket";
+import { niriSendAction, niriSendActionArr } from "../../utils/niri-client";
 import { swithScreen } from "./swith-screen";
 
 export async function actions(req: Response) {

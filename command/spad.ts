@@ -3,7 +3,7 @@ import { excuse } from "../utils/exec";
 import {
   niriSendActionArr,
   niriSendActionArrSequence,
-} from "../utils/niri-socket";
+} from "../utils/niri-client";
 
 type Spad = {
   cmd: string;

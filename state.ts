@@ -1,4 +1,4 @@
-import { niriEventStream } from "./utils/niri-socket";
+import { niriEventStream } from "./utils/niri-client";
 
 export function NiriState() {
   let outputs = new Set<string>();
@@ -60,8 +60,9 @@ export function NiriState() {
   const stop = niriEventStream((obj) => {
     const action = Object.keys(obj)[0];
     for (const item of listeners) {
-      item(action, obj);
+      item(action!, obj);
     }
+    // console.log(`test:>`, JSON.stringify(obj));
     switch (action) {
       case "WorkspacesChanged":
         workspaces.clear();
@@ -82,7 +83,7 @@ export function NiriState() {
       case "WorkspaceActivated":
         setActiveWorkspace(
           obj.WorkspaceActivated.id,
-          obj.WorkspaceActivated.focused,
+          obj.WorkspaceActivated.focused
         );
         break;
       case "WindowsChanged":

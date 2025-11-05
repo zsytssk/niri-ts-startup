@@ -1,101 +1,109 @@
 import net from "net";
 
 const SOCKET_PATH = process.env.NIRI_SOCKET;
-export function niriEventStream(fn: (data: any) => void) {
-  if (!SOCKET_PATH) {
-    return;
-  }
+export function NiriSocket() {
+  if (!SOCKET_PATH) return;
+  let client: net.Socket | undefined = undefined;
+  let reconnectTimer: number | undefined = undefined;
+  const eventMap = new Map<string, Set<(data?: any) => void>>();
+  let shouldConnect = true;
+  let status = "connecting" as `connecting` | "connected" | "end";
 
-  // 创建连接
-  const client = net.createConnection({ path: SOCKET_PATH }, () => {
-    client.write(Buffer.from(JSON.stringify("EventStream") + "\n"), "utf-8");
-  });
-
-  // 缓存未处理的数据
-  let buffer = "";
-  // 处理接收数据
-  client.on("data", (chunk) => {
-    buffer += chunk.toString();
-
-    // 按行处理
-    let lines = buffer.split("\n");
-    buffer = lines.pop()!; // 保留最后可能不完整的一行
-
-    for (const line of lines) {
-      fn(JSON.parse(line));
+  const connect = () => {
+    // 防止重复连接
+    if (client) {
+      try {
+        client.destroy();
+      } catch {}
+      client = undefined;
     }
-  });
-
-  return () => client.end();
-}
-
-let localClient: any;
-async function getClient() {
-  if (!localClient) {
-    localClient = new Promise<any>((resolve) => {
-      const client = net.createConnection({ path: SOCKET_PATH! }, () => {
-        resolve(client);
-      });
+    client = net.createConnection({ path: SOCKET_PATH }, () => {
+      status = "connected";
+      const bindFns = eventMap.get("connected");
+      if (bindFns) {
+        for (const item of bindFns) {
+          item();
+        }
+      }
     });
-  }
-  if (localClient instanceof Promise) {
-    return localClient.then((client) => {
-      localClient = client;
-      return client;
-    });
-  }
-  return localClient;
-}
 
-export function niriSend(obj: any) {
-  return new Promise<void>((resolve, reject) => {
-    const client = net.createConnection({ path: SOCKET_PATH! }, () => {
-      client.write(JSON.stringify(obj) + "\n", (err: any) => {
-        if (err) reject(err);
-        client.end();
-        resolve();
-      });
+    client.on("data", (chunk) => {
+      const bindFns = eventMap.get("data");
+      if (bindFns) {
+        for (const item of bindFns) {
+          item(chunk);
+        }
+      }
     });
-  });
-}
 
-export async function niriSendAction(obj: any) {
-  const client = await getClient();
-  return new Promise<void>((resolve, reject) => {
-    client.write(JSON.stringify({ Action: obj }) + "\n", (err: any) => {
-      if (err) reject(err);
-      resolve();
+    client.on("error", (err) => {
+      status = "connecting";
+      scheduleReconnect();
     });
-  });
-}
 
-// 同时发送多个命令
-export async function niriSendActionArr(arr: Array<any>) {
-  const client = await getClient();
-  const taskList = [] as any[];
-  for (const obj of arr) {
-    const task = new Promise<void>((resolve, reject) => {
-      client.write(JSON.stringify({ Action: obj }) + "\n", (err: any) => {
-        if (err) reject(err);
-        resolve();
-      });
+    client.on("close", () => {
+      status = "connecting";
+      scheduleReconnect();
     });
-    taskList.push(task);
-  }
-  return Promise.all(taskList);
-}
+  };
 
-// 一个一个的发送命令
-export async function niriSendActionArrSequence(arr: Array<any>) {
-  const client = await getClient();
-  for (const obj of arr) {
-    await new Promise<void>((resolve, reject) => {
-      client.write(JSON.stringify({ Action: obj }) + "\n", (err: any) => {
-        if (err) reject(err);
-        setTimeout(() => {
-          resolve();
-        }, 10);
-      });
+  const scheduleReconnect = () => {
+    if (!shouldConnect) {
+      return;
+    }
+    if (reconnectTimer) return; // 已经在等待中
+    reconnectTimer = setTimeout(() => {
+      reconnectTimer = undefined;
+      connect();
+    }, 2000) as unknown as number; // 2 秒后重连
+  };
+
+  // 首次连接
+  connect();
+
+  const on = (event: string, callback: (data?: any) => void, once = false) => {
+    let events = eventMap.get(event);
+    if (!events) {
+      events = new Set();
+      eventMap.set(event, events);
+    }
+    if (once) {
+      const fn = (data: any) => {
+        callback(data);
+        events.delete(fn);
+      };
+      events.add(fn);
+    } else {
+      events.add(callback);
+    }
+  };
+
+  const once = (event: string, callback: (data?: any) => void) => {
+    on(event, callback, true);
+  };
+
+  const send = (obj: string | Object, callback?: (err?: any) => void) => {
+    if (status === "end") {
+      return;
+    }
+    if (status === "connected") {
+      client?.write(Buffer.from(JSON.stringify(obj) + "\n"), "utf-8", callback);
+      return;
+    }
+
+    once("connected", () => {
+      client?.write(Buffer.from(JSON.stringify(obj) + "\n"), "utf-8", callback);
     });
-  }
+  };
+
+  const end = () => {
+    status = "end";
+    shouldConnect = false;
+    client?.end();
+    client = undefined;
+    eventMap.clear();
+    clearTimeout(reconnectTimer);
+  };
+
+  return { send, on, end };
 }

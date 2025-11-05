@@ -1,6 +1,6 @@
 import { state } from "..";
 import { excuse } from "../utils/exec";
-import { niriSendActionArrSequence } from "../utils/niri-socket";
+import { niriSendActionArrSequence } from "../utils/niri-client";
 
 export async function runApp(req: Response) {
   try {

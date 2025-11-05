@@ -1,5 +1,5 @@
 import { state } from "../..";
-import { niriSendActionArrSequence } from "../../utils/niri-socket";
+import { niriSendActionArrSequence } from "../../utils/niri-client";
 
 export async function swithScreen() {
   const { outputs, workspaces, currentWorkspaceId } = state;
