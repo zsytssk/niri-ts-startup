@@ -30,7 +30,7 @@ const SpadMap = {
   },
 
   youdao: {
-    cmd: `google-chrome-stable --app-id="dbgilkgiemncodkddegnikoceledjgho"`,
+    cmd: `google-chrome-stable --disable-features=GlobalShortcutsPortal --app-id="dbgilkgiemncodkddegnikoceledjgho"`,
     match: (item: any) =>
       item.app_id == "chrome-dbgilkgiemncodkddegnikoceledjgho-Default",
     height: 600,
@@ -38,7 +38,7 @@ const SpadMap = {
   },
 
   doubao: {
-    cmd: `google-chrome-stable --app-id="nfjhphkhjelhenadmhihghlkccjdpdkk"`,
+    cmd: `google-chrome-stable --disable-features=GlobalShortcutsPortal --app-id="nfjhphkhjelhenadmhihghlkccjdpdkk"`,
     match: (item: any) =>
       item.app_id == "chrome-nfjhphkhjelhenadmhihghlkccjdpdkk-Default",
     height: 600,
@@ -46,7 +46,7 @@ const SpadMap = {
   },
 
   deepseek: {
-    cmd: `google-chrome-stable --app-id="hmjcdonmhijmnefklekckjkeoknbiipb"`,
+    cmd: `google-chrome-stable --disable-features=GlobalShortcutsPortal --app-id="hmjcdonmhijmnefklekckjkeoknbiipb"`,
     match: (item: any) =>
       item.app_id == "chrome-hmjcdonmhijmnefklekckjkeoknbiipb-Default",
     height: 600,
@@ -54,7 +54,7 @@ const SpadMap = {
   },
 
   chatgpt: {
-    cmd: `google-chrome-stable --app-id="cadlkienfkclaiaibeoongdcgmdikeeg"`,
+    cmd: `google-chrome-stable --disable-features=GlobalShortcutsPortal --app-id="cadlkienfkclaiaibeoongdcgmdikeeg"`,
     match: (item: any) =>
       item.app_id == "chrome-cadlkienfkclaiaibeoongdcgmdikeeg-Default",
     height: 600,

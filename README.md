@@ -1,6 +1,8 @@
 # niri-ts-startup
 
-To install dependencies:
+this is a ts script for some niri wm functions. eg `scratchpad` `switch screen` and `run app or focus existed app` ..
+
+## To install dependencies:
 
 ```bash
 bun install
