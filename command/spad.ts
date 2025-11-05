@@ -23,7 +23,7 @@ const SpadMap = {
   },
 
   jobNote: {
-    cmd: `ghostty --title="JobNote" --class="jobNote.ghostty" --x11-instance-name=jobNote --working-directory=/home/zsy/Documents/zsy/github/jobNote -e nvim`,
+    cmd: `ghostty --title="JobNote" --class="jobNote.ghostty" --working-directory=/home/zsy/Documents/zsy/github/jobNote -e nvim`,
     match: (item: any) => item.app_id == "jobNote.ghostty",
     height: 600,
     width: 1200,
@@ -62,14 +62,14 @@ const SpadMap = {
   },
 
   explorer: {
-    cmd: `ghostty --title="ExplorerPop" --class="explorerPop.ghostty" --x11-instance-name="explorerPop" -e yazi`,
+    cmd: `ghostty --title="ExplorerPop" --class="explorerPop.ghostty" -e yazi`,
     match: (item: any) => item.app_id == "explorerPop.ghostty",
     height: 600,
     width: 1200,
   },
 
   tip: {
-    cmd: `ghostty --title="Tip" --class="tip.ghostty" --x11-instance-name=tip --working-directory=/home/zsy/Documents/zsy/github/jobNote -e nvim ./tip.md`,
+    cmd: `ghostty --title="Tip" --class="tip.ghostty" --working-directory=/home/zsy/Documents/zsy/github/jobNote -e nvim ./tip.md`,
     match: (item: any) => item.app_id == "tip.ghostty",
     height: 600,
     width: 1200,
