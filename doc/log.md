@@ -1,4 +1,45 @@
 ```
+keycode 232 = XF86MonBrightnessDown NoSymbol XF86MonBrightnessDown
+keycode 233 = XF86MonBrightnessUp NoSymbol XF86MonBrightnessUp
+
+xmodmap -pke | grep XF86
+
+keycode 229 = XF86Shop NoSymbol XF86Shop
+keycode 232 = XF86MonBrightnessDown NoSymbol XF86MonBrightnessDown
+keycode 233 = XF86MonBrightnessUp NoSymbol XF86MonBrightnessUp
+keycode 234 = XF86AudioMedia NoSymbol XF86AudioMedia
+keycode 235 = XF86Display NoSymbol XF86Display
+keycode 236 = XF86KbdLightOnOff NoSymbol XF86KbdLightOnOff
+keycode 237 = XF86KbdBrightnessDown NoSymbol XF86KbdBrightnessDown
+keycode 238 = XF86KbdBrightnessUp NoSymbol XF86KbdBrightnessUp
+keycode 239 = XF86Send NoSymbol XF86Send
+
+
+-event4   KEYBOARD_KEY                 +0.000s  KEY_BRIGHTNESSDOWN (224) pressed
+ event4   KEYBOARD_KEY                 +0.000s  KEY_BRIGHTNESSDOWN (224) released
+ event4   KEYBOARD_KEY                 +1.096s  KEY_BRIGHTNESSUP (225) pressed
+ event4   KEYBOARD_KEY                 +1.096s  KEY_BRIGHTNESSUP (225) released
+
+ sudo libinput debug-events
+
+
+ eycode 224 = XF86Messenger NoSymbol XF86Messenger
+keycode 225 = XF86Search NoSymbol XF86Search
+
+
+video/brightnessdown BRTDN 00000087 00000000
+wmi PNP0C14:00 000000a0 00000000
+video/brightnessup BRTUP 00000086 00000000
+wmi PNP0C14:00 000000a0 00000000
+
+acpi_listen
+/etc/acpi/events/brightness
+
+sudo journalctl -f | grep key
+
+```
+
+```
 curl -v http://127.0.0.1:6321/powerOptions
 
 curl -X POST http://127.0.0.1:6321/runApp -H "Content-Type: application/json" -d "{\"title\":\"Ghostty\"}"

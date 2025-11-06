@@ -1,13 +1,17 @@
 import { excuse } from "../../utils/exec";
+import { niriSendAction } from "../../utils/niri-client";
+import { sleep } from "../../utils/utils";
 
 export async function powerActions() {
   const result = await excuse(
-    `echo "🔒 Lock\n🔚 Logout\n⛔ Shutdown\n🔄 Reboot" | fuzzel -d -p "请选择: "`,
-    {}
+    `echo "🔒 Lock\n🔚 Logout\n⛔ Shutdown\n🔄 Reboot" | fuzzel -d -p "请选择: "`
   );
   if (result == "🔒 Lock") {
-    // excuse("hyprlock", {});
     excuse("swaylock");
+    await sleep(3);
+    await niriSendAction({
+      PowerOffMonitors: {},
+    });
     return;
   }
   if (result == "🔚 Logout") {
