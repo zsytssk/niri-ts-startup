@@ -2,7 +2,7 @@ import { excuse } from "../../utils/exec";
 import { niriSendAction } from "../../utils/niri-client";
 import { powerActions } from "./powerActions";
 import { screenshot, selectWindow } from "./screenshot";
-import { swithScreen } from "./swith-screen";
+import { switchScreen } from "./switch-screen";
 
 export async function actions(req: Request) {
   const data = await req.json(); // 解析 JSON body
@@ -42,7 +42,7 @@ export async function actions(req: Request) {
       }
       break;
     case "swith-screen":
-      swithScreen();
+      switchScreen();
       break;
   }
 }

@@ -1,7 +1,7 @@
 import { state } from "../..";
 import { niriSendActionArrSequence } from "../../utils/niri-client";
 
-export async function swithScreen() {
+export async function switchScreen() {
   const { outputs, workspaces, currentWorkspaceId } = state;
   const curOutput = workspaces.get(currentWorkspaceId!)?.output;
   if (!curOutput) {
