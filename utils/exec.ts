@@ -3,6 +3,7 @@ const { exec } = child_process;
 
 type Opts = {
   path?: string;
+  nohup?: boolean;
   output?: boolean;
 };
 export function excuse(command: string, opts: Opts = {}) {
@@ -15,7 +16,12 @@ export function excuse(command: string, opts: Opts = {}) {
   return new Promise((resolve, reject) => {
     let std_out = "";
     let std_err = "";
-    const run_process = exec(command, config);
+    let run_process;
+    if (opts.nohup) {
+      run_process = exec(`nohup sh -c '${command}' > /dev/null 2>&1 &`, config);
+    } else {
+      run_process = exec(command, config);
+    }
     if (!run_process.stdout || !run_process.stderr) {
       return reject(`cant get stdout or stderr`);
     }

@@ -1,4 +1,5 @@
 import { niriEventStream } from "./utils/niri-client";
+import { sleep } from "./utils/utils";
 
 export function NiriState() {
   let outputs = new Set<string>();
@@ -62,7 +63,7 @@ export function NiriState() {
     for (const item of listeners) {
       item(action!, obj);
     }
-    // console.log(`test:>`, JSON.stringify(obj));
+    console.log(`test:>`, JSON.stringify(obj));
     switch (action) {
       case "WorkspacesChanged":
         workspaces.clear();
@@ -177,6 +178,34 @@ export function NiriState() {
     });
   };
 
+  const waitScreenShot = async () => {
+    const task1 = new Promise((resolve) => {
+      const fn = (name: string, obj: any) => {
+        if (name === "ScreenshotCaptured") {
+          const path = obj.ScreenshotCaptured.path;
+          resolve(path);
+          listeners.delete(fn);
+        }
+      };
+      listeners.add(fn);
+    });
+    const task2 = new Promise<void>((resolve) => {
+      const fn = (name: string, obj: any) => {
+        if (name === "WindowFocusChanged") {
+          if (obj.WindowFocusChanged.id) {
+            listeners.delete(fn);
+            sleep(1).then(() => {
+              resolve();
+            });
+          }
+        }
+      };
+      listeners.add(fn);
+    });
+
+    return Promise.race([task1, task2]);
+  };
+
   const onWindowBlur = (item: any, fn: () => any) => {
     const localFn = (name: string, obj: any) => {
       if (name === "FocusWindow") {
@@ -200,6 +229,7 @@ export function NiriState() {
     getWindowOutput,
     overviewOpen,
     filterWindow,
+    waitScreenShot,
     waitWindowOpen,
     onWindowBlur,
     getOutputOtherWorkspace,

@@ -2,11 +2,11 @@ import { state } from "..";
 import { excuse } from "../utils/exec";
 import { niriSendActionArrSequence } from "../utils/niri-client";
 
-export async function runApp(req: Response) {
+export async function runApp(req: Request) {
   try {
     const data = await req.json(); // 解析 JSON body
     // console.log(`test:>runApp`);
-    const { title, app_id, cmd } = data;
+    const { title, app_id, cmd } = data as Record<string, any>;
     const filterFn = (item: any) => {
       if (title) {
         const titleList = title.split("|");
@@ -21,11 +21,10 @@ export async function runApp(req: Response) {
     const apps = state.filterWindow(filterFn);
     let item: any;
     if (!apps.length) {
-      await excuse(cmd, {});
+      await excuse(cmd, { nohup: true });
       item = await state.waitWindowOpen(filterFn);
     } else {
       const index = apps.findIndex((item) => item.is_focused) || -1;
-      // console.log(`test:>runApp`, index, apps.length);
       let nextIndex = index + 1;
       if (nextIndex >= apps.length) {
         nextIndex = 0;

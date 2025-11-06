@@ -78,9 +78,9 @@ const SpadMap = {
 
 const bindWindiwFn = {} as Record<string, () => void>;
 
-export async function spad(req: Response) {
+export async function spad(req: Request) {
   const data = await req.json(); // 解析 JSON body
-  const { name } = data;
+  const { name } = data as Record<string, any>;
   const config = SpadMap[name];
   if (!config) {
     return;
@@ -88,7 +88,7 @@ export async function spad(req: Response) {
 
   let item = state.filterWindow(config.match)?.[0];
   if (item?.id && bindWindiwFn[item?.id]) {
-    bindWindiwFn[item?.id]();
+    (bindWindiwFn[item?.id] as Function)();
     delete bindWindiwFn[item?.id];
   }
 

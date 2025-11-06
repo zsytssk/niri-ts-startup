@@ -1,5 +1,5 @@
 import Bun from "bun";
-import { powerActions } from "./command/powerActions";
+import { powerActions } from "./command/actions/powerActions";
 import { runApp } from "./command/runApp";
 import { spad } from "./command/spad";
 import { NiriState } from "./state";
@@ -10,12 +10,9 @@ export const state = NiriState();
 async function main() {
   Bun.serve({
     port: 6321,
-    fetch: async (req: Response) => {
+    fetch: async (req: Request) => {
       const url = new URL(req.url);
       switch (url.pathname) {
-        case "/powerOptions":
-          await powerActions();
-          break;
         case "/spad":
           await spad(req);
           break;
