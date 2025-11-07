@@ -61,3 +61,7 @@ export const useOnWindowBlur = (state: NiriStateType) => {
     return off;
   };
 };
+
+export const isSpadActive = (item: any) => {
+  return item.is_floating && item.is_focused;
+};

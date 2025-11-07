@@ -1,5 +1,9 @@
 import { state } from "..";
-import { useOnWindowBlur, useWaitWindowOpen } from "../state/useStateHook";
+import {
+  isSpadActive,
+  useOnWindowBlur,
+  useWaitWindowOpen,
+} from "../state/useStateHook";
 import { excuse } from "../utils/exec";
 import {
   niriSendActionArr,
@@ -95,7 +99,7 @@ export async function spad(req: Request) {
     delete bindWindowFn[item?.id];
   }
 
-  if (item && state.isWindowWorkspaceFocus(item)) {
+  if (item && isSpadActive(item)) {
     const otherWorkspace = state.getOutputOtherWorkspace(item.workspace_id);
     await niriSendActionArrSequence([
       {

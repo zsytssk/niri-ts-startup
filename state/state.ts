@@ -160,11 +160,6 @@ export function NiriState() {
     return noWindowWorkspace[0];
   };
 
-  const isWindowWorkspaceFocus = (item: any) => {
-    const workspace = workspaces.get(item.workspace_id);
-    return workspace.is_focused;
-  };
-
   const getState = () => {
     return {
       outputs: [...outputs],
@@ -200,7 +195,6 @@ export function NiriState() {
     onEvent,
     getOutputOtherWorkspace,
     getActiveWorkspaceId,
-    isWindowWorkspaceFocus,
     get currentWorkspaceId() {
       return currentWorkspaceId;
     },
