@@ -1,9 +1,9 @@
 import Bun from "bun";
-import { powerActions } from "./command/actions/powerActions";
 import { runApp } from "./command/runApp";
 import { spad } from "./command/spad";
-import { NiriState } from "./state";
+import { NiriState } from "./state/state";
 import { actions } from "./command/actions/actions";
+import { getCurWindow } from "./command/getCurWindow";
 
 export const state = NiriState();
 
@@ -22,12 +22,18 @@ async function main() {
         case "/runApp":
           await runApp(req);
           break;
+        case "/getCurWindow":
+          const title = await getCurWindow(req);
+          return new Response(title, {
+            status: 200,
+          });
         default:
-          console.log(`state:>`, state);
-          break;
+          return new Response(JSON.stringify(state.getState()), {
+            status: 200,
+          });
       }
 
-      return Response.json("OK", { status: 200 });
+      return new Response("OK", { status: 200 });
       //  return new Response("404 Not Found", { status: 404 });
     },
   });

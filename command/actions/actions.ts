@@ -27,7 +27,6 @@ export async function actions(req: Request) {
     case "screenshot":
       await niriSendAction({ Screenshot: { show_pointer: false } });
       await screenshot();
-      console.log(`test:>screenshot`);
       break;
     case "screenshot-window":
       await niriSendAction({ ScreenshotWindow: { write_to_disk: true } });

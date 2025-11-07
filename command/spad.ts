@@ -1,4 +1,5 @@
 import { state } from "..";
+import { useOnWindowBlur, useWaitWindowOpen } from "../state/useStateHook";
 import { excuse } from "../utils/exec";
 import {
   niriSendActionArr,
@@ -76,9 +77,11 @@ const SpadMap = {
   },
 } as Record<string, Spad>;
 
-const bindWindiwFn = {} as Record<string, () => void>;
+const bindWindowFn = {} as Record<string, () => void>;
 
 export async function spad(req: Request) {
+  const waitWindowOpen = useWaitWindowOpen(state);
+  const onWindowBlur = useOnWindowBlur(state);
   const data = await req.json(); // 解析 JSON body
   const { name } = data as Record<string, any>;
   const config = SpadMap[name];
@@ -87,9 +90,9 @@ export async function spad(req: Request) {
   }
 
   let item = state.filterWindow(config.match)?.[0];
-  if (item?.id && bindWindiwFn[item?.id]) {
-    (bindWindiwFn[item?.id] as Function)();
-    delete bindWindiwFn[item?.id];
+  if (item?.id && bindWindowFn[item?.id]) {
+    (bindWindowFn[item?.id] as Function)();
+    delete bindWindowFn[item?.id];
   }
 
   if (item && state.isWindowWorkspaceFocus(item)) {
@@ -111,7 +114,7 @@ export async function spad(req: Request) {
 
   if (!item) {
     excuse(config.cmd, {});
-    item = await state.waitWindowOpen(config.match);
+    item = await waitWindowOpen(config.match);
     // return;
   }
   await niriSendActionArrSequence([
@@ -134,7 +137,7 @@ export async function spad(req: Request) {
   ]);
   item.workspace_id = state.getActiveWorkspaceId();
 
-  bindWindiwFn[item.id] = state.onWindowBlur(item, async () => {
+  bindWindowFn[item.id] = onWindowBlur(item, async () => {
     const otherWorkspace = state.getOutputOtherWorkspace(item.workspace_id);
     await niriSendActionArr([
       {

@@ -1,6 +1,6 @@
-import { niriEventStream } from "./utils/niri-client";
-import { sleep } from "./utils/utils";
+import { niriEventStream } from "../utils/niri-client";
 
+export type NiriStateType = ReturnType<typeof NiriState>;
 export function NiriState() {
   let outputs = new Set<string>();
   let workspaces = new Map<number, any>();
@@ -19,7 +19,7 @@ export function NiriState() {
         item.is_focused = item.id === curId;
       }
       if (workspace_id) {
-        setActiveWorkspace(workspace_id, true);
+        setActiveWorkspace(workspace_id, curId, true);
       }
     }
     for (const item of listeners) {
@@ -31,7 +31,11 @@ export function NiriState() {
     return currentWorkspaceId;
   };
 
-  const setActiveWorkspace = (curId: number, focus = false) => {
+  const setActiveWorkspace = (
+    curId: number,
+    active_window_id?: number,
+    focus = false
+  ) => {
     const output = workspaces.get(curId)?.output;
     if (!output) {
       return;
@@ -41,6 +45,9 @@ export function NiriState() {
         continue;
       }
       item.is_active = item.id === curId;
+      if (active_window_id) {
+        item.active_window_id = active_window_id;
+      }
     }
     if (focus) {
       currentWorkspaceId = curId;
@@ -63,7 +70,7 @@ export function NiriState() {
     for (const item of listeners) {
       item(action!, obj);
     }
-    console.log(`test:>`, JSON.stringify(obj));
+    // console.log(`test:>`, JSON.stringify(obj));
     switch (action) {
       case "WorkspacesChanged":
         workspaces.clear();
@@ -158,60 +165,20 @@ export function NiriState() {
     return workspace.is_focused;
   };
 
-  const waitWindowOpen = async (filterFn: (item: any) => boolean) => {
-    for (const [key, item] of windows) {
-      if (filterFn(item)) {
-        return item;
-      }
-    }
-    return new Promise((resolve) => {
-      const fn = (name: string, obj: any) => {
-        if (name === "WindowOpenedOrChanged") {
-          const window = obj.WindowOpenedOrChanged.window;
-          if (filterFn(window)) {
-            resolve(window);
-            listeners.delete(fn);
-          }
-        }
-      };
-      listeners.add(fn);
-    });
+  const getState = () => {
+    return {
+      outputs: [...outputs],
+      windows: Object.fromEntries(windows),
+      workspaces: Object.fromEntries(workspaces),
+    };
   };
 
-  const waitScreenShot = async () => {
-    const task1 = new Promise((resolve) => {
-      const fn = (name: string, obj: any) => {
-        if (name === "ScreenshotCaptured") {
-          const path = obj.ScreenshotCaptured.path;
-          resolve(path);
-          listeners.delete(fn);
-        }
-      };
-      listeners.add(fn);
-    });
-    const task2 = new Promise<void>((resolve) => {
-      const fn = (name: string, obj: any) => {
-        if (name === "WindowFocusChanged") {
-          if (obj.WindowFocusChanged.id) {
-            listeners.delete(fn);
-            sleep(1).then(() => {
-              resolve();
-            });
-          }
-        }
-      };
-      listeners.add(fn);
-    });
-
-    return Promise.race([task1, task2]);
-  };
-
-  const onWindowBlur = (item: any, fn: () => any) => {
+  const onEvent = (event: string, fn: (params: any) => void, once = false) => {
     const localFn = (name: string, obj: any) => {
-      if (name === "FocusWindow") {
-        if (obj?.id !== item.id) {
-          fn();
-          listeners.delete(localFn);
+      if (name === event) {
+        fn(obj);
+        if (once) {
+          listeners.delete(fn);
         }
       }
     };
@@ -226,12 +193,11 @@ export function NiriState() {
     outputs,
     workspaces,
     windows,
+    getState,
     getWindowOutput,
     overviewOpen,
     filterWindow,
-    waitScreenShot,
-    waitWindowOpen,
-    onWindowBlur,
+    onEvent,
     getOutputOtherWorkspace,
     getActiveWorkspaceId,
     isWindowWorkspaceFocus,

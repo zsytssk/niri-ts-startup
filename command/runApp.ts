@@ -1,8 +1,10 @@
 import { state } from "..";
+import { useWaitWindowOpen } from "../state/useStateHook";
 import { excuse } from "../utils/exec";
 import { niriSendActionArrSequence } from "../utils/niri-client";
 
 export async function runApp(req: Request) {
+  const waitWindowOpen = useWaitWindowOpen(state);
   try {
     const data = await req.json(); // 解析 JSON body
     // console.log(`test:>runApp`);
@@ -22,7 +24,7 @@ export async function runApp(req: Request) {
     let item: any;
     if (!apps.length) {
       await excuse(cmd, { nohup: true });
-      item = await state.waitWindowOpen(filterFn);
+      item = await waitWindowOpen(filterFn);
     } else {
       const index = apps.findIndex((item) => item.is_focused) || -1;
       let nextIndex = index + 1;

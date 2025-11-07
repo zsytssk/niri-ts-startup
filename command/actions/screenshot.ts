@@ -1,9 +1,11 @@
 import { state } from "../..";
+import { useWaitScreenShot } from "../../state/useStateHook";
 import { excuse } from "../../utils/exec";
 import { niriSendActionArrSequence } from "../../utils/niri-client";
 
 export async function screenshot() {
-  const path = await state.waitScreenShot();
+  const waitScreenShot = useWaitScreenShot(state);
+  const path = await waitScreenShot();
   if (path) {
     await excuse(
       `satty --filename ${path} --actions-on-enter save-to-clipboard`
