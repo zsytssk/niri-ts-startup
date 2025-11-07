@@ -40,7 +40,7 @@ export async function actions(req: Request) {
         await excuse("fcitx5-remote -o");
       }
       break;
-    case "swith-screen":
+    case "switch-screen":
       switchScreen();
       break;
   }
