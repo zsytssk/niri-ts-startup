@@ -1,11 +1,12 @@
 import Bun from "bun";
 import { runApp } from "./command/runApp";
-import { spad } from "./command/spad";
+import { Spad } from "./command/spad";
 import { NiriState } from "./state/state";
 import { actions } from "./command/actions/actions";
 import { getCurWindow } from "./command/getCurWindow";
 
 export const state = NiriState();
+export const spad = Spad(state);
 
 async function main() {
   Bun.serve({

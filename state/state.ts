@@ -27,10 +27,6 @@ export function NiriState() {
     }
   };
 
-  const getActiveWorkspaceId = () => {
-    return currentWorkspaceId;
-  };
-
   const setActiveWorkspace = (
     curId: number,
     active_window_id?: number,
@@ -133,33 +129,6 @@ export function NiriState() {
     return results;
   };
 
-  const getOutputOtherWorkspace = (workspace_id: number) => {
-    const output = workspaces.get(workspace_id).output;
-    const hasWindowWorkspace = [] as any[];
-    const noWindowWorkspace = [] as any[];
-    for (const [key, item] of workspaces) {
-      if (item.output !== output || item.id === workspace_id) {
-        continue;
-      }
-      let hasWin = false;
-      for (const [, win] of windows) {
-        if (win.workspace_id === item.id) {
-          hasWin = true;
-          break;
-        }
-      }
-      if (hasWin) {
-        hasWindowWorkspace.push(item);
-      } else {
-        noWindowWorkspace.push(item);
-      }
-    }
-    if (hasWindowWorkspace.length) {
-      return hasWindowWorkspace[0];
-    }
-    return noWindowWorkspace[0];
-  };
-
   const getState = () => {
     return {
       outputs: [...outputs],
@@ -193,13 +162,11 @@ export function NiriState() {
     overviewOpen,
     filterWindow,
     onEvent,
-    getOutputOtherWorkspace,
-    getActiveWorkspaceId,
     get currentWorkspaceId() {
       return currentWorkspaceId;
     },
     get currentWindowId() {
-      return currentWorkspaceId;
+      return currentWindowId;
     },
     // onBlur,
     stop,

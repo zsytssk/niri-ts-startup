@@ -61,6 +61,36 @@ export const useOnWindowBlur = (state: NiriStateType) => {
     return off;
   };
 };
+export const useOutputOtherWorkspace = (state: NiriStateType) => {
+  return (workspace_id: number) => {
+    const workspaces = state.workspaces;
+    const windows = state.workspaces;
+    const output = workspaces.get(workspace_id).output;
+    const hasWindowWorkspace = [] as any[];
+    const noWindowWorkspace = [] as any[];
+    for (const [key, item] of workspaces) {
+      if (item.output !== output || item.id === workspace_id) {
+        continue;
+      }
+      let hasWin = false;
+      for (const [, win] of windows) {
+        if (win.workspace_id === item.id) {
+          hasWin = true;
+          break;
+        }
+      }
+      if (hasWin) {
+        hasWindowWorkspace.push(item);
+      } else {
+        noWindowWorkspace.push(item);
+      }
+    }
+    if (hasWindowWorkspace.length) {
+      return hasWindowWorkspace[0];
+    }
+    return noWindowWorkspace[0];
+  };
+};
 
 export const isSpadActive = (item: any) => {
   return item.is_floating && item.is_focused;

@@ -10,6 +10,7 @@ function bindActiveWindowChange(output: string, signal: number) {
   bind.set(output, true);
   state.onEvent("FocusWindow", (window: any) => {
     if (!window) {
+      excuse(`pkill -RTMIN+${signal} waybar`);
       return;
     }
     const windowOutput = state.workspaces.get(window.workspace_id)?.output;

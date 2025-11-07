@@ -1,7 +1,8 @@
-import { state } from "..";
+import type { NiriStateType } from "../state/state";
 import {
   isSpadActive,
   useOnWindowBlur,
+  useOutputOtherWorkspace,
   useWaitWindowOpen,
 } from "../state/useStateHook";
 import { excuse } from "../utils/exec";
@@ -83,78 +84,81 @@ const SpadMap = {
 
 const bindWindowFn = {} as Record<string, () => void>;
 
-export async function spad(req: Request) {
+export function Spad(state: NiriStateType) {
   const waitWindowOpen = useWaitWindowOpen(state);
   const onWindowBlur = useOnWindowBlur(state);
-  const data = await req.json(); // 解析 JSON body
-  const { name } = data as Record<string, any>;
-  const config = SpadMap[name];
-  if (!config) {
-    return;
-  }
+  const getOutputOtherWorkspace = useOutputOtherWorkspace(state);
+  return async (req: Request) => {
+    const data = await req.json(); // 解析 JSON body
+    const { name } = data as Record<string, any>;
+    const config = SpadMap[name];
+    if (!config) {
+      return;
+    }
 
-  let item = state.filterWindow(config.match)?.[0];
-  if (item?.id && bindWindowFn[item?.id]) {
-    (bindWindowFn[item?.id] as Function)();
-    delete bindWindowFn[item?.id];
-  }
+    let item = state.filterWindow(config.match)?.[0];
+    if (item?.id && bindWindowFn[item?.id]) {
+      (bindWindowFn[item?.id] as Function)();
+      delete bindWindowFn[item?.id];
+    }
 
-  if (item && isSpadActive(item)) {
-    const otherWorkspace = state.getOutputOtherWorkspace(item.workspace_id);
+    if (item && isSpadActive(item)) {
+      const otherWorkspace = getOutputOtherWorkspace(item.workspace_id);
+      await niriSendActionArrSequence([
+        {
+          MoveWindowToWorkspace: {
+            window_id: item.id,
+            focus: false,
+            reference: { Id: otherWorkspace.id },
+          },
+        },
+        {
+          ToggleWindowFloating: { id: item.id },
+        },
+      ]);
+      return;
+    }
+
+    if (!item) {
+      excuse(config.cmd, {});
+      item = await waitWindowOpen(config.match);
+      // return;
+    }
     await niriSendActionArrSequence([
       {
         MoveWindowToWorkspace: {
           window_id: item.id,
           focus: false,
-          reference: { Id: otherWorkspace.id },
+          reference: { Id: state.currentWorkspaceId },
         },
       },
       {
-        ToggleWindowFloating: { id: item.id },
+        MoveWindowToFloating: { id: item.id },
+      },
+      {
+        FocusWindow: { id: item.id },
+      },
+      {
+        CenterWindow: { id: item.id },
       },
     ]);
-    return;
-  }
+    item.workspace_id = state.currentWorkspaceId;
 
-  if (!item) {
-    excuse(config.cmd, {});
-    item = await waitWindowOpen(config.match);
-    // return;
-  }
-  await niriSendActionArrSequence([
-    {
-      MoveWindowToWorkspace: {
-        window_id: item.id,
-        focus: false,
-        reference: { Id: state.getActiveWorkspaceId() },
-      },
-    },
-    {
-      MoveWindowToFloating: { id: item.id },
-    },
-    {
-      FocusWindow: { id: item.id },
-    },
-    {
-      CenterWindow: { id: item.id },
-    },
-  ]);
-  item.workspace_id = state.getActiveWorkspaceId();
-
-  bindWindowFn[item.id] = onWindowBlur(item, async () => {
-    const otherWorkspace = state.getOutputOtherWorkspace(item.workspace_id);
-    await niriSendActionArr([
-      {
-        MoveWindowToWorkspace: {
-          window_id: item.id,
-          focus: false,
-          reference: { Id: otherWorkspace.id },
+    bindWindowFn[item.id] = onWindowBlur(item, async () => {
+      const otherWorkspace = getOutputOtherWorkspace(item.workspace_id);
+      await niriSendActionArr([
+        {
+          MoveWindowToWorkspace: {
+            window_id: item.id,
+            focus: false,
+            reference: { Id: otherWorkspace.id },
+          },
         },
-      },
-      {
-        ToggleWindowFloating: { id: item.id },
-      },
-    ]);
-    return;
-  });
+        {
+          ToggleWindowFloating: { id: item.id },
+        },
+      ]);
+      return;
+    });
+  };
 }
