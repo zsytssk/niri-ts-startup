@@ -236,5 +236,30 @@
     }
   },
   { "OverviewOpenedOrClosed": { "is_open": false } },
-  { "ConfigLoaded": { "failed": false } }
+  {
+    "WindowLayoutsChanged": {
+      "changes": [
+        [
+          6,
+          {
+            "pos_in_scrolling_layout": [1, 1],
+            "tile_size": [954, 1035],
+            "window_size": [950, 1031],
+            "tile_pos_in_workspace_view": null,
+            "window_offset_in_tile": [2, 2]
+          }
+        ],
+        [
+          8,
+          {
+            "pos_in_scrolling_layout": [2, 1],
+            "tile_size": [954, 1035],
+            "window_size": [950, 1031],
+            "tile_pos_in_workspace_view": null,
+            "window_offset_in_tile": [2, 2]
+          }
+        ]
+      ]
+    }
+  }
 ]

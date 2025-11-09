@@ -119,6 +119,7 @@ export function Spad(state: NiriStateType) {
       return;
     }
 
+    const currentWorkspaceId = state.currentWorkspaceId;
     if (!item) {
       excuse(config.cmd, {});
       item = await waitWindowOpen(config.match);
@@ -129,7 +130,7 @@ export function Spad(state: NiriStateType) {
         MoveWindowToWorkspace: {
           window_id: item.id,
           focus: false,
-          reference: { Id: state.currentWorkspaceId },
+          reference: { Id: currentWorkspaceId },
         },
       },
       {
@@ -142,7 +143,7 @@ export function Spad(state: NiriStateType) {
         CenterWindow: { id: item.id },
       },
     ]);
-    item.workspace_id = state.currentWorkspaceId;
+    item.workspace_id = currentWorkspaceId;
 
     bindWindowFn[item.id] = onWindowBlur(item, async () => {
       const otherWorkspace = getOutputOtherWorkspace(item.workspace_id);

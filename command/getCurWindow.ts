@@ -1,4 +1,5 @@
 import { state } from "..";
+import { useWorkspaceWindows } from "../state/useStateHook";
 import { excuse } from "../utils/exec";
 
 const bind = new Map<string, boolean>();
@@ -25,17 +26,42 @@ export async function getCurWindow(req: Request) {
   const data = await req.json(); // 解析 JSON body
   const { output, signal } = data as Record<string, any>;
   bindActiveWindowChange(output, signal);
-  const curState = state.getState();
+  const getWorkspaceWindows = useWorkspaceWindows(state);
+  const { workspaces, windows } = state;
   let active_window_id: number | undefined;
-  for (const [id, workspace] of Object.entries(curState.workspaces)) {
-    if (workspace.output === output && workspace.is_active) {
-      active_window_id = workspace.active_window_id;
-      break;
+
+  let workspaceWindows = [];
+  for (const [_, workspace] of workspaces) {
+    if (workspace.output !== output || !workspace.is_active) {
+      continue;
     }
+    active_window_id = workspace.active_window_id;
+    workspaceWindows = getWorkspaceWindows(workspace.id);
+    for (const [, window] of windows) {
+      if (window.workspace_id !== workspace.id) {
+        continue;
+      }
+    }
+    break;
   }
-  console.log(`test:>active_window_id`, active_window_id);
   if (!active_window_id) {
     return "";
   }
-  return curState.windows[active_window_id]?.title || "";
+  // console.log(`test:>workspaceWindows`, workspaceWindows);
+  let index = workspaceWindows.findIndex(
+    (item) => item.id === active_window_id
+  );
+  const allNum = workspaceWindows.length;
+  const title = windows.get(active_window_id!)?.title;
+  if (!title) {
+    return "";
+  }
+  return JSON.stringify({
+    text: `${index + 1}/${allNum} ${title}`,
+    class: "text",
+  });
+  // return JSON.stringify([
+  //   { text: `${index + 1}/${allNum} ${title} 1`, class: "text" },
+  //   { text: `${index + 1}/${allNum} ${title} 2`, class: "text" },
+  // ]);
 }

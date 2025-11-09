@@ -116,6 +116,16 @@ export function NiriState() {
       case "WindowFocusChanged":
         setCurWindowId(obj.WindowFocusChanged.id || undefined);
         break;
+      case "WindowLayoutsChanged":
+        const changes = obj.WindowLayoutsChanged.changes;
+        for (const item of changes) {
+          const [windowId, layout] = item;
+          const window = windows.get(windowId);
+          if (window) {
+            window.layout = layout;
+          }
+        }
+        break;
     }
   });
 

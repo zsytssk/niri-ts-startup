@@ -63,8 +63,7 @@ export const useOnWindowBlur = (state: NiriStateType) => {
 };
 export const useOutputOtherWorkspace = (state: NiriStateType) => {
   return (workspace_id: number) => {
-    const workspaces = state.workspaces;
-    const windows = state.windows;
+    const { workspaces, windows } = state;
     const output = workspaces.get(workspace_id).output;
     const hasWindowWorkspace = [] as any[];
     const noWindowWorkspace = [] as any[];
@@ -88,10 +87,44 @@ export const useOutputOtherWorkspace = (state: NiriStateType) => {
     if (hasWindowWorkspace.length) {
       return hasWindowWorkspace[0];
     }
+
+    /** 不选择最两边的workspace, 防止niri自动创建新的workspace */
+    const allNum = noWindowWorkspace.length + 1;
+    for (const item of noWindowWorkspace) {
+      if (item.idx === 1 && item.idx === allNum) {
+        continue;
+      }
+      return item;
+    }
     return noWindowWorkspace[0];
   };
 };
 
 export const isSpadActive = (item: any) => {
   return item.is_floating && item.is_focused;
+};
+
+export const useWorkspaceWindows = (state: NiriStateType) => {
+  const result = [] as any[];
+  return (workspaceId: number) => {
+    const { windows } = state;
+
+    for (const [, window] of windows) {
+      if (window.workspace_id !== workspaceId) {
+        continue;
+      }
+      result.push(window);
+    }
+    return result.sort((a, b) => {
+      if (!b.layout.pos_in_scrolling_layout) {
+        return -1;
+      }
+      if (!a.layout.pos_in_scrolling_layout) {
+        return 1;
+      }
+      const [ax, ay] = a.layout.pos_in_scrolling_layout;
+      const [bx, by] = b.layout.pos_in_scrolling_layout;
+      return ax - bx || ay - by;
+    });
+  };
 };
