@@ -33,6 +33,7 @@ export async function getCurWindow(req: Request) {
       break;
     }
   }
+  console.log(`test:>active_window_id`, active_window_id);
   if (!active_window_id) {
     return "";
   }

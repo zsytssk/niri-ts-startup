@@ -64,7 +64,7 @@ export const useOnWindowBlur = (state: NiriStateType) => {
 export const useOutputOtherWorkspace = (state: NiriStateType) => {
   return (workspace_id: number) => {
     const workspaces = state.workspaces;
-    const windows = state.workspaces;
+    const windows = state.windows;
     const output = workspaces.get(workspace_id).output;
     const hasWindowWorkspace = [] as any[];
     const noWindowWorkspace = [] as any[];
