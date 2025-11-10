@@ -87,6 +87,7 @@ export function NiriState() {
       case "WorkspaceActivated":
         setActiveWorkspace(
           obj.WorkspaceActivated.id,
+          undefined,
           obj.WorkspaceActivated.focused
         );
         break;
