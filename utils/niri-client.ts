@@ -1,4 +1,5 @@
 import { NiriSocket } from "./niri-socket";
+import { sleep } from "./utils";
 
 export function niriEventStream(fn: (data: any) => void) {
   const socket = NiriSocket();
@@ -66,6 +67,10 @@ export async function niriSendActionArr(arr: Array<any>) {
 export async function niriSendActionArrSequence(arr: Array<any>) {
   const client = await getClient();
   for (const obj of arr) {
+    if (obj.sleep) {
+      await sleep(obj.sleep);
+      continue;
+    }
     await new Promise<void>((resolve, reject) => {
       client?.send({ Action: obj }, (err: any) => {
         if (err) reject(err);

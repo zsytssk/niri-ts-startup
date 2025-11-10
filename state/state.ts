@@ -41,7 +41,7 @@ export function NiriState() {
         continue;
       }
       item.is_active = item.id === curId;
-      if (active_window_id) {
+      if (active_window_id && item.is_active) {
         item.active_window_id = active_window_id;
       }
     }

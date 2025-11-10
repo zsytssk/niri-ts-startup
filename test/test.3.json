@@ -1,0 +1,96 @@
+{
+  "WorkspacesChanged": {
+    "workspaces": [
+      {
+        "id": 281,
+        "idx": 1,
+        "name": null,
+        "output": "eDP-1",
+        "is_urgent": false,
+        "is_active": false,
+        "is_focused": false,
+        "active_window_id": null
+      },
+      {
+        "id": 149,
+        "idx": 2,
+        "name": null,
+        "output": "eDP-1",
+        "is_urgent": false,
+        "is_active": true,
+        "is_focused": true,
+        "active_window_id": 20
+      },
+      {
+        "id": 1,
+        "idx": 3,
+        "name": "code",
+        "output": "eDP-1",
+        "is_urgent": false,
+        "is_active": false,
+        "is_focused": false,
+        "active_window_id": null
+      },
+      {
+        "id": 266,
+        "idx": 4,
+        "name": null,
+        "output": "eDP-1",
+        "is_urgent": false,
+        "is_active": false,
+        "is_focused": false,
+        "active_window_id": null
+      },
+      {
+        "id": 265,
+        "idx": 1,
+        "name": null,
+        "output": "HDMI-A-1",
+        "is_urgent": false,
+        "is_active": false,
+        "is_focused": false,
+        "active_window_id": null
+      },
+      {
+        "id": 2,
+        "idx": 2,
+        "name": "browser",
+        "output": "HDMI-A-1",
+        "is_urgent": false,
+        "is_active": false,
+        "is_focused": false,
+        "active_window_id": 4
+      },
+      {
+        "id": 3,
+        "idx": 3,
+        "name": "terminal",
+        "output": "HDMI-A-1",
+        "is_urgent": false,
+        "is_active": true,
+        "is_focused": false,
+        "active_window_id": 77
+      },
+      {
+        "id": 4,
+        "idx": 4,
+        "name": "wechat",
+        "output": "HDMI-A-1",
+        "is_urgent": false,
+        "is_active": false,
+        "is_focused": false,
+        "active_window_id": 17
+      },
+      {
+        "id": 268,
+        "idx": 5,
+        "name": null,
+        "output": "HDMI-A-1",
+        "is_urgent": false,
+        "is_active": false,
+        "is_focused": false,
+        "active_window_id": null
+      }
+    ]
+  }
+}

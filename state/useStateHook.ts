@@ -90,8 +90,9 @@ export const useOutputOtherWorkspace = (state: NiriStateType) => {
 
     /** 不选择最两边的workspace, 防止niri自动创建新的workspace */
     const allNum = noWindowWorkspace.length + 1;
+    console.log(`test:>noWindowWorkspace`, noWindowWorkspace, allNum);
     for (const item of noWindowWorkspace) {
-      if (item.idx === 1 && item.idx === allNum) {
+      if (item.idx === 1 || item.idx === allNum) {
         continue;
       }
       return item;

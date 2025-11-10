@@ -32,17 +32,11 @@ export async function getCurWindow(req: Request) {
 
   let workspaceWindows = [];
   for (const [_, workspace] of workspaces) {
-    if (workspace.output !== output || !workspace.is_active) {
-      continue;
+    if (workspace.output === output && workspace.is_active) {
+      active_window_id = workspace.active_window_id;
+      workspaceWindows = getWorkspaceWindows(workspace.id);
+      break;
     }
-    active_window_id = workspace.active_window_id;
-    workspaceWindows = getWorkspaceWindows(workspace.id);
-    for (const [, window] of windows) {
-      if (window.workspace_id !== workspace.id) {
-        continue;
-      }
-    }
-    break;
   }
   if (!active_window_id) {
     return "";
@@ -56,10 +50,7 @@ export async function getCurWindow(req: Request) {
   if (!title) {
     return "";
   }
-  return JSON.stringify({
-    text: `${index + 1}/${allNum} ${title}`,
-    class: "text",
-  });
+  return `${index + 1}/${allNum} ${title}`;
   // return JSON.stringify([
   //   { text: `${index + 1}/${allNum} ${title} 1`, class: "text" },
   //   { text: `${index + 1}/${allNum} ${title} 2`, class: "text" },
