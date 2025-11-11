@@ -149,9 +149,10 @@ export function Spad(state: NiriStateType) {
           MoveWindowToWorkspace: {
             window_id: item.id,
             focus: false,
-            reference: { Id: SpadWorkspaceName },
+            reference: { Name: SpadWorkspaceName },
           },
         },
+        { sleep: 0.1 },
         {
           ToggleWindowFloating: { id: item.id },
         },
