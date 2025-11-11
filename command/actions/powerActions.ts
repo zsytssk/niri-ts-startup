@@ -1,5 +1,4 @@
 import { excuse } from "../../utils/exec";
-import { niriSendAction } from "../../utils/niri-client";
 import { sleep } from "../../utils/utils";
 
 export async function powerActions() {
@@ -9,9 +8,7 @@ export async function powerActions() {
   if (result == "🔒 Lock") {
     excuse("swaylock");
     await sleep(3);
-    await niriSendAction({
-      PowerOffMonitors: {},
-    });
+    await excuse("systemctl suspend");
     return;
   }
   if (result == "🔚 Logout") {
