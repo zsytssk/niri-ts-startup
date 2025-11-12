@@ -5,9 +5,12 @@
 - @ques go 重写?
 
 - 自己写一个 reset 方法
+
   - 重置所有的 window 的 workspace 位置
   - 重置所有 workspace 的 output 位置
   - 每个窗口打开是记忆他的位置 | workspace 也一样
+
+- @ques output 发生变化有没有事件
 
 ## 2025-11-05 09:27:11
 

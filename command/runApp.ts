@@ -26,7 +26,7 @@ export async function runApp(req: Request) {
       await excuse(cmd, { nohup: true });
       item = await waitWindowOpen(filterFn);
     } else {
-      const index = apps.findIndex((item) => item.is_focused) || -1;
+      const index = apps.findIndex((item) => item.is_focused) ?? -1;
       let nextIndex = index + 1;
       if (nextIndex >= apps.length) {
         nextIndex = 0;
