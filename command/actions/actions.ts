@@ -43,5 +43,11 @@ export async function actions(req: Request) {
     case "switch-screen":
       switchScreen();
       break;
+    case "pick-color":
+      const str = (await excuse("niri msg pick-color")) as string;
+      const lines = str.split("\n");
+      const color = lines[1]?.split(": ")[1];
+      await excuse(`echo "${color}" | wl-copy`);
+      break;
   }
 }

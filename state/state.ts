@@ -2,13 +2,15 @@ import { niriEventStream } from "../utils/niri-client";
 
 export type NiriStateType = ReturnType<typeof NiriState>;
 export function NiriState() {
-  let outputs = new Set<string>();
-  let workspaces = new Map<number, any>();
-  let windows = new Map<number, any>();
+  const outputs = new Set<string>();
+  const workspaces = new Map<number, any>();
+  const windows = new Map<number, any>();
   let currentWindowId: number | undefined = undefined;
   let currentWorkspaceId: number | undefined = undefined;
   let overviewOpen = false;
   const listeners = new Set<(name: string, data: any) => void>();
+  /** 记录每个window的workspace 位置, workspace 的 output 位置 */
+  const originPos = new Map<string, number | string>();
 
   const setCurWindowId = (curId: number) => {
     currentWindowId = curId;
