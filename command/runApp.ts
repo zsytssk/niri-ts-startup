@@ -41,7 +41,5 @@ export async function runApp(req: Request) {
         CenterWindow: { id: item.id },
       },
     ]);
-  } catch (err) {
-    console.log(`test:>`, 123213, err);
-  }
+  } catch (err) {}
 }
