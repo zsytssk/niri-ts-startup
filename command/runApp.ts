@@ -37,9 +37,9 @@ export async function runApp(req: Request) {
       {
         FocusWindow: { id: item.id },
       },
-      {
-        CenterWindow: { id: item.id },
-      },
+      // {
+      //   CenterWindow: { id: item.id },
+      // },
     ]);
   } catch (err) {}
 }

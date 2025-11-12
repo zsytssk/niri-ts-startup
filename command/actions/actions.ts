@@ -1,5 +1,6 @@
 import { excuse } from "../../utils/exec";
 import { niriSendAction } from "../../utils/niri-client";
+import { focusNextWindow } from "./next-window";
 import { powerActions } from "./powerActions";
 import { screenshot, selectWindow } from "./screenshot";
 import { switchScreen } from "./switch-screen";
@@ -12,8 +13,8 @@ export async function actions(req: Request) {
     case "power-actions":
       await powerActions();
       break;
-    case "next-column-center":
-      await niriSendAction({ FocusColumnRightOrFirst: {} });
+    case "next-window":
+      await focusNextWindow();
       break;
     case "select-window":
       await selectWindow();
