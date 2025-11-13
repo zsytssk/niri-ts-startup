@@ -1,12 +1,14 @@
 import { state } from "../..";
 import { niriSendActionArrSequence } from "../../utils/niri-client";
 
+let isSwitch = false;
 export async function switchScreen() {
   const { outputs, workspaces, currentWorkspaceId } = state;
   const curOutput = workspaces.get(currentWorkspaceId!)?.output;
-  if (!curOutput) {
+  if (!curOutput || isSwitch) {
     return;
   }
+  isSwitch = true;
   const curIndex = [...outputs].findIndex((item) => item == curOutput);
   let nextIndex = curIndex + 1;
   if (nextIndex >= outputs.size) {
@@ -27,12 +29,21 @@ export async function switchScreen() {
   }
   curOutputWorkspaces.sort((a, b) => a.idx - b.idx);
   nextOutputWorkspaces.sort((a, b) => a.idx - b.idx);
+  const task = [] as Promise<any>[];
   for (const item of [...curOutputWorkspaces, ...nextOutputWorkspaces]) {
     const output = item.output === curOutput ? nextOutput : curOutput;
     const actions: any[] = [
       {
         MoveWorkspaceToMonitor: {
           output: output,
+          reference: {
+            Id: item.id,
+          },
+        },
+      },
+      {
+        MoveWorkspaceToIndex: {
+          index: item.idx,
           reference: {
             Id: item.id,
           },
@@ -48,6 +59,8 @@ export async function switchScreen() {
         },
       });
     }
-    await niriSendActionArrSequence(actions);
+    task.push(niriSendActionArrSequence(actions));
   }
+  await Promise.all(task);
+  isSwitch = false;
 }

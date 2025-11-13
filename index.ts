@@ -23,6 +23,7 @@ async function main() {
   }
   try {
     await excuse("notify-send 启动 niri-ts-startup!");
+    await excuse("pkill waybar 2>/dev/null && waybar &");
   } catch (err) {
     console.error("excuse 执行失败:", err);
   }
