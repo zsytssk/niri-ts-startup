@@ -5,6 +5,14 @@ ssh -X zsy@192.168.122.196
 
 https://github.com/Vortriz/awesome-niri
 
+```
+// 上次log
+journalctl --user -u niri -b -1
+
+// 这次log
+journalctl --user -u niri -f
+```
+
 ## 需要实现的功能
 
 - @todo swap monitor

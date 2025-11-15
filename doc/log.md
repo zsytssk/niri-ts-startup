@@ -1,4 +1,18 @@
 ```
+journalctl --user -u niri.service -f
+11月 15 10:09:52 zsy-pc niri[44242]: 2025-11-15T02:09:52.430215Z DEBUG niri::backend::tty: picking mode: Mode { name: "1920x1080", clock: 152840, size: (1920, 1080), hsync: (1968, 2000, 2250), vsync: (1083, 1088, 1132), hskew: 0, vscan: 0, vrefresh: 60, mode_type: ModeTypeFlags(PREFERRED | DRIVER) }
+11月 15 10:09:52 zsy-pc niri[44242]: 2025-11-15T02:09:52.433825Z DEBUG niri::niri: putting output eDP-1 at x=0 y=0
+11月 15 10:09:52 zsy-pc niri[44242]: 2025-11-15T02:09:52.433849Z DEBUG niri::backend::tty: connecting connector: HDMI-A-1
+11月 15 10:09:52 zsy-pc niri[44242]: 2025-11-15T02:09:52.433891Z DEBUG niri::backend::tty: picking mode: Mode { name: "1920x1080", clock: 148500, size: (1920, 1080), hsync: (2008, 2052, 2200), vsync: (1084, 1089, 1125), hskew: 0, vscan: 0, vrefresh: 60, mode_type: ModeTypeFlags(DRIVER) }
+11月 15 10:09:52 zsy-pc niri[44242]: 2025-11-15T02:09:52.435698Z DEBUG niri::niri: putting output HDMI-A-1 at x=1920 y=0
+11月 15 10:09:53 zsy-pc niri[44242]: 2025-11-15T02:09:53.067999Z DEBUG niri::utils::xwayland::satellite: connection to X11 abstract socket; spawning xwayland-satellite
+11月 15 10:10:05 zsy-pc niri[44242]: 2025-11-15T02:10:05.207892Z  WARN niri::ipc::server: error processing IPC request: "error parsing request"
+11月 15 10:10:23 zsy-pc niri[44242]: 2025-11-15T02:10:23.300983Z  WARN niri::ipc::server: error processing IPC request: "error parsing request"
+11月 15 10:11:13 zsy-pc niri[44242]: 2025-11-15T02:11:13.389425Z  WARN niri::ipc::server: error processing IPC request: "error parsing request"
+11月 15 10:11:34 zsy-pc niri[44242]: 2025-11-15T02:11:34.584373Z  WARN niri::ipc::server: error processing IPC request: "error parsing request"
+```
+
+```
 keycode 232 = XF86MonBrightnessDown NoSymbol XF86MonBrightnessDown
 keycode 233 = XF86MonBrightnessUp NoSymbol XF86MonBrightnessUp
 
