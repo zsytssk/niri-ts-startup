@@ -1,0 +1,6 @@
+SpadMap:
+  term:
+    cmd: 'ghostty --title="TermSpad" --class="TermSpad.ghostty"'
+    app_id: "TermSpad.ghostty"
+    height: 900
+    width: 1200

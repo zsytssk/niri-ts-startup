@@ -1,11 +1,11 @@
 import Bun from "bun";
-import { runApp } from "./command/runApp";
-import { Spad } from "./command/spad";
-import { NiriState } from "./state/state";
-import { actions } from "./command/actions/actions";
-import { getCurWindow } from "./command/getCurWindow";
-import { excuse } from "./utils/exec";
-import { sleep } from "./utils/utils";
+import { actions } from "./src/command/actions/actions";
+import { getCurWindow } from "./src/command/getCurWindow";
+import { runApp } from "./src/command/runApp";
+import { Spad } from "./src/command/spad";
+import { NiriState } from "./src/state/state";
+import { excuse } from "./src/utils/exec";
+import { sleep } from "./src/utils/utils";
 
 export const state = NiriState();
 export const spad = Spad(state);
@@ -23,7 +23,8 @@ async function main() {
   }
   try {
     await excuse("notify-send 启动 niri-ts-startup!");
-    await excuse("pkill waybar 2>/dev/null && waybar &");
+    // await excuse("pkill waybar 2>/dev/null && waybar &");
+    await excuse("killall -q waybar ; sleep 0.3 ; waybar &");
   } catch (err) {
     console.error("excuse 执行失败:", err);
   }

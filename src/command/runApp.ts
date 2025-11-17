@@ -1,4 +1,4 @@
-import { state } from "..";
+import { state } from "../..";
 import { useWaitWindowOpen } from "../state/useStateHook";
 import { excuse } from "../utils/exec";
 import { niriSendActionArrSequence } from "../utils/niri-client";

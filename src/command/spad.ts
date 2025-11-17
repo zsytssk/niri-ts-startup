@@ -1,3 +1,4 @@
+import { getConfig } from "../config";
 import type { NiriStateType } from "../state/state";
 import {
   isSpadActive,
@@ -10,76 +11,25 @@ import {
   niriSendActionArrSequence,
 } from "../utils/niri-client";
 
-type Spad = {
+export type Spad = {
   cmd: string;
-  match: (win: any) => boolean;
   width: number;
   height: number;
+  app_id?: string;
+  title?: string;
 };
 
-const SpadMap = {
-  term: {
-    cmd: `ghostty --title="TermSpad" --class="TermSpad.ghostty"`,
-    match: (item: any) => {
-      return item.title == "TermSpad";
-    },
-    height: 600,
-    width: 1200,
-  },
-
-  jobNote: {
-    cmd: `ghostty --title="JobNote" --class="jobNote.ghostty" --working-directory=/home/zsy/Documents/zsy/github/jobNote -e nvim`,
-    match: (item: any) => item.app_id == "jobNote.ghostty",
-    height: 600,
-    width: 1200,
-  },
-
-  youdao: {
-    cmd: `google-chrome-stable --disable-features=GlobalShortcutsPortal --app-id="dbgilkgiemncodkddegnikoceledjgho"`,
-    match: (item: any) =>
-      item.app_id == "chrome-dbgilkgiemncodkddegnikoceledjgho-Default",
-    height: 600,
-    width: 1200,
-  },
-
-  doubao: {
-    cmd: `google-chrome-stable --disable-features=GlobalShortcutsPortal --app-id="nfjhphkhjelhenadmhihghlkccjdpdkk"`,
-    match: (item: any) =>
-      item.app_id == "chrome-nfjhphkhjelhenadmhihghlkccjdpdkk-Default",
-    height: 600,
-    width: 1200,
-  },
-
-  deepseek: {
-    cmd: `google-chrome-stable --disable-features=GlobalShortcutsPortal --app-id="hmjcdonmhijmnefklekckjkeoknbiipb"`,
-    match: (item: any) =>
-      item.app_id == "chrome-hmjcdonmhijmnefklekckjkeoknbiipb-Default",
-    height: 600,
-    width: 1200,
-  },
-
-  chatgpt: {
-    cmd: `google-chrome-stable --disable-features=GlobalShortcutsPortal --app-id="cadlkienfkclaiaibeoongdcgmdikeeg"`,
-    match: (item: any) =>
-      item.app_id == "chrome-cadlkienfkclaiaibeoongdcgmdikeeg-Default",
-    height: 600,
-    width: 1200,
-  },
-
-  explorer: {
-    cmd: `ghostty --title="ExplorerPop" --class="explorerPop.ghostty" -e yazi`,
-    match: (item: any) => item.app_id == "explorerPop.ghostty",
-    height: 600,
-    width: 1200,
-  },
-
-  tip: {
-    cmd: `ghostty --title="Tip" --class="tip.ghostty" --working-directory=/home/zsy/Documents/zsy/github/jobNote -e nvim ./tip.md`,
-    match: (item: any) => item.app_id == "tip.ghostty",
-    height: 600,
-    width: 1200,
-  },
-} as Record<string, Spad>;
+const useMatchFn = (config: Spad) => {
+  return (item: any) => {
+    if (config.app_id) {
+      return item.app_id === config.app_id;
+    }
+    if (config.title) {
+      return item.title === config.title;
+    }
+    return false;
+  };
+};
 const SpadWorkspaceName = "spad";
 const bindWindowFn = {} as Record<string, () => void>;
 
@@ -87,14 +37,16 @@ export function Spad(state: NiriStateType) {
   const waitWindowOpen = useWaitWindowOpen(state);
   const onWindowBlur = useOnWindowBlur(state);
   return async (req: Request) => {
+    const projectConfig = await getConfig();
     const data = await req.json(); // 解析 JSON body
     const { name } = data as Record<string, any>;
-    const config = SpadMap[name];
+    const config = projectConfig.SpadMap[name];
     if (!config) {
       return;
     }
+    const matchFn = useMatchFn(config);
 
-    let item = state.filterWindow(config.match)?.[0];
+    let item = state.filterWindow(matchFn)?.[0];
     if (item?.id && bindWindowFn[item?.id]) {
       (bindWindowFn[item?.id] as Function)();
       delete bindWindowFn[item?.id];
@@ -119,7 +71,7 @@ export function Spad(state: NiriStateType) {
     const currentWorkspaceId = state.currentWorkspaceId;
     if (!item) {
       excuse(config.cmd, {});
-      item = await waitWindowOpen(config.match);
+      item = await waitWindowOpen(matchFn);
       // return;
     }
     await niriSendActionArrSequence([
@@ -131,7 +83,18 @@ export function Spad(state: NiriStateType) {
         },
       },
       {
+        SetWindowHeight: { id: item.id, change: { SetFixed: config.height } },
+      },
+      {
+        SetWindowWidth: { id: item.id, change: { SetFixed: config.width } },
+      },
+
+      {
         MoveWindowToFloating: { id: item.id },
+      },
+
+      {
+        SetWindowHeight: { id: item.id },
       },
       {
         FocusWindow: { id: item.id },

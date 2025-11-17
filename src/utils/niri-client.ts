@@ -76,7 +76,7 @@ export async function niriSendActionArrSequence(arr: Array<any>) {
         if (err) reject(err);
         setTimeout(() => {
           resolve();
-        }, 10);
+        }, 0);
       });
     });
   }

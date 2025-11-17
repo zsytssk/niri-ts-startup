@@ -1,4 +1,4 @@
-import { state } from "../..";
+import { state } from "../../..";
 import { useWorkspaceWindows } from "../../state/useStateHook";
 import { niriSendAction } from "../../utils/niri-client";
 

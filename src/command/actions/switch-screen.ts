@@ -1,4 +1,4 @@
-import { state } from "../..";
+import { state } from "../../..";
 import { niriSendActionArrSequence } from "../../utils/niri-client";
 
 let isSwitch = false;
