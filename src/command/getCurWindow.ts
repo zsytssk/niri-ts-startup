@@ -47,7 +47,7 @@ export async function getCurWindow(req: Request) {
   );
   const allNum = workspaceWindows.length;
   const title = windows.get(active_window_id!)?.title;
-  if (!title) {
+  if (!title || !allNum) {
     return "";
   }
   return `${index + 1}/${allNum} ${title}`;
