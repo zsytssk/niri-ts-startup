@@ -9,8 +9,20 @@ export function NiriState() {
   let currentWorkspaceId: number | undefined = undefined;
   let overviewOpen = false;
   const listeners = new Set<(name: string, data: any) => void>();
-  /** 记录每个window的workspace 位置, workspace 的 output 位置 */
+  /** @todo-reset 记录每个window的workspace 位置, workspace 的 output 位置 */
   const originPos = new Map<string, number | string>();
+
+  const windowClose = (id: number) => {
+    const window = windows.get(id);
+    if (!window) {
+      return;
+    }
+    const workspace = workspaces.get(window.workspace_id);
+    if (workspace.active_window_id == id) {
+      workspace.active_window_id = undefined;
+    }
+    windows.delete(id);
+  };
 
   const setCurWindowId = (curId: number) => {
     currentWindowId = curId;
@@ -43,8 +55,8 @@ export function NiriState() {
         continue;
       }
       item.is_active = item.id === curId;
-      if (active_window_id && item.is_active) {
-        item.active_window_id = active_window_id;
+      if (active_window_id) {
+        item.active_window_id = item.is_active ? active_window_id : undefined;
       }
     }
     if (focus) {
@@ -104,7 +116,7 @@ export function NiriState() {
         }
         break;
       case "WindowClosed":
-        windows.delete(obj.WindowClosed.id);
+        windowClose(obj.WindowClosed.id);
         break;
       case "OverviewOpenedOrClosed":
         overviewOpen = obj.OverviewOpenedOrClosed;
