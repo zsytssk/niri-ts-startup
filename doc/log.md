@@ -1,4 +1,13 @@
 ```
+env STEAM_DISABLE_WAYLAND=1 steam
+```
+
+```
+rtkit-daemon
+anacron         /usr/sbin/anacron -d -q -s
+```
+
+```
 journalctl --user -u niri.service -f
 11月 15 10:09:52 zsy-pc niri[44242]: 2025-11-15T02:09:52.430215Z DEBUG niri::backend::tty: picking mode: Mode { name: "1920x1080", clock: 152840, size: (1920, 1080), hsync: (1968, 2000, 2250), vsync: (1083, 1088, 1132), hskew: 0, vscan: 0, vrefresh: 60, mode_type: ModeTypeFlags(PREFERRED | DRIVER) }
 11月 15 10:09:52 zsy-pc niri[44242]: 2025-11-15T02:09:52.433825Z DEBUG niri::niri: putting output eDP-1 at x=0 y=0

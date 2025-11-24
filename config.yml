@@ -4,3 +4,8 @@ SpadMap:
     app_id: "TermSpad.ghostty"
     height: 900
     width: 1200
+  youdao:
+    cmd: 'google-chrome-stable --app-id="dbgilkgiemncodkddegnikoceledjgho"'
+    app_id: "chrome-dbgilkgiemncodkddegnikoceledjgho-Default"
+    height: 900
+    width: 1200

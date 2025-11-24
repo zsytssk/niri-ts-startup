@@ -92,10 +92,6 @@ export function Spad(state: NiriStateType) {
       {
         MoveWindowToFloating: { id: item.id },
       },
-
-      {
-        SetWindowHeight: { id: item.id },
-      },
       {
         FocusWindow: { id: item.id },
       },
