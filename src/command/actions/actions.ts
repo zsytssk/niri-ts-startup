@@ -2,6 +2,7 @@ import { excuse } from "../../utils/exec";
 import { niriSendAction } from "../../utils/niri-client";
 import { focusNextWindow } from "./next-window";
 import { powerActions } from "./powerActions";
+import { resetState } from "./reset-state";
 import { screenshot, selectWindow } from "./screenshot";
 import { switchScreen } from "./switch-screen";
 
@@ -49,6 +50,9 @@ export async function actions(req: Request) {
       const lines = str.split("\n");
       const color = lines[1]?.split(": ")[1];
       await excuse(`echo "${color}" | wl-copy`);
+      break;
+    case "reset-state":
+      resetState();
       break;
   }
 }

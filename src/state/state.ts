@@ -1,6 +1,13 @@
 import { niriEventStream } from "../utils/niri-client";
 
 export type NiriStateType = ReturnType<typeof NiriState>;
+type OriginWorkspaceInfo = {
+  output: string;
+  idx: number;
+};
+type OriginWindowInfo = {
+  workspace: string;
+};
 export function NiriState() {
   const outputs = new Set<string>();
   const workspaces = new Map<number, any>();
@@ -10,7 +17,22 @@ export function NiriState() {
   let overviewOpen = false;
   const listeners = new Set<(name: string, data: any) => void>();
   /** @todo-reset 记录每个window的workspace 位置, workspace 的 output 位置 */
-  const originPos = new Map<string, number | string>();
+  const originWorkspaceInfo = new Map<string, OriginWorkspaceInfo>();
+  const originWindowInfo = new Map<string, OriginWindowInfo>();
+
+  const addWindow = (window: any) => {
+    windows.set(window.id, window);
+    if (window.is_focused) {
+      setTimeout(() => {
+        setCurWindowId(window.id);
+      });
+    }
+    if (!originWindowInfo.has(window.id)) {
+      originWindowInfo.set(window.id, {
+        workspace: window.workspace_id,
+      });
+    }
+  };
 
   const windowClose = (id: number) => {
     const window = windows.get(id);
@@ -38,6 +60,19 @@ export function NiriState() {
     }
     for (const item of listeners) {
       item("FocusWindow", curWindow);
+    }
+  };
+
+  const addWorkspace = (workspace: any) => {
+    workspaces.set(workspace.id, workspace);
+    if (!outputs.has(workspace.output)) {
+      outputs.add(workspace.output);
+    }
+    if (!originWorkspaceInfo.has(workspace.id)) {
+      originWorkspaceInfo.set(workspace.id, {
+        output: workspace.output,
+        idx: workspace.idx,
+      });
     }
   };
 
@@ -92,10 +127,7 @@ export function NiriState() {
               setActiveWorkspace(item.id);
             });
           }
-          workspaces.set(item.id, item);
-          if (!outputs.has(item.output)) {
-            outputs.add(item.output);
-          }
+          addWorkspace(item);
         }
         break;
       case "WorkspaceActivated":
@@ -107,12 +139,7 @@ export function NiriState() {
         break;
       case "WindowsChanged":
         for (const item of obj.WindowsChanged.windows || []) {
-          windows.set(item.id, item);
-          if (item.is_focused) {
-            setTimeout(() => {
-              setCurWindowId(item.id);
-            });
-          }
+          addWindow(item);
         }
         break;
       case "WindowClosed":
@@ -123,10 +150,7 @@ export function NiriState() {
         break;
       case "WindowOpenedOrChanged":
         const openItem = obj.WindowOpenedOrChanged.window;
-        windows.set(openItem.id, openItem);
-        if (openItem.is_focused) {
-          setCurWindowId(openItem.id);
-        }
+        addWindow(openItem);
         break;
       case "WindowFocusChanged":
         setCurWindowId(obj.WindowFocusChanged.id || undefined);
@@ -182,6 +206,8 @@ export function NiriState() {
     outputs,
     workspaces,
     windows,
+    originWorkspaceInfo,
+    originWindowInfo,
     getState,
     getWindowOutput,
     overviewOpen,
