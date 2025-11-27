@@ -115,18 +115,11 @@ export function NiriState() {
     for (const item of listeners) {
       item(action!, obj);
     }
-    // console.log(`test:>`, JSON.stringify(obj));
     switch (action) {
       case "WorkspacesChanged":
         workspaces.clear();
         outputs.clear();
         for (const item of obj.WorkspacesChanged.workspaces || []) {
-          if (item.is_active) {
-            // 先等所有的workspace记录之后再去设置当前id
-            setTimeout(() => {
-              setActiveWorkspace(item.id);
-            });
-          }
           addWorkspace(item);
         }
         break;

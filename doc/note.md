@@ -1,3 +1,7 @@
+## 2025-11-27 10:40:49
+
+switchScreen is_active workspace 会有些问题
+
 ## 2025-11-10 09:00:33
 
 - @ques taskbar 多个 -> 不行
