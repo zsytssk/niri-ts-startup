@@ -164,6 +164,9 @@ export function NiriState() {
   const filterWindow = (filterFn: (item: any) => boolean) => {
     const results = [] as any[];
     for (const [key, item] of windows) {
+      if (!item) {
+        continue;
+      }
       if (filterFn(item)) {
         results.push(item);
       }

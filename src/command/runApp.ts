@@ -33,6 +33,7 @@ export async function runApp(req: Request) {
       }
       item = apps[nextIndex];
     }
+    // console.log(`test:>item`, item);
     await niriSendActionArrSequence([
       {
         FocusWindow: { id: item.id },

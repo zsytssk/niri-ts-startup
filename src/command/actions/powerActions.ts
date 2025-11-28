@@ -11,13 +11,9 @@ export async function powerActions() {
   const result = await excuse(
     `echo "󰌾 Lock\n󰍃 Logout\n󰙧 Shutdown\n󰑐 Reboot\n󰚰 Update" | fuzzel -d -p "请选择: "`
   );
-  // const result = await excuse(
-  //   `echo "🔒 Lock\n🔚 Logout\n⛔ Shutdown\n🔄 Reboot" | rofi -dmenu -p  "请选择: "`
-  // );
   if (result == "󰌾 Lock") {
     await excuse("swaylock --daemonize");
     await sleep(1);
-    // await excuse("systemctl suspend");
     await niriSendAction({
       PowerOffMonitors: {},
     });
@@ -28,23 +24,13 @@ export async function powerActions() {
     return;
   }
   if (result == "󰑐 Reboot") {
-    const res = await excuse(
-      `notify-send "确定要重启吗？" -a "提示" -u normal -A yes=Yes -A no=No`,
-      {}
-    );
-    if (res === "yes") {
-      excuse("reboot", {});
-    }
+    await excuse(`zenity --question --text="确定要重启吗？"`, {});
+    excuse("reboot", {});
     return;
   }
   if (result == "󰙧 Shutdown") {
-    const res = await excuse(
-      `notify-send "确定要关机吗？" -a "提示" -u normal -A yes=Yes -A no=No`,
-      {}
-    );
-    if (res === "yes") {
-      excuse("shutdown -h now", {});
-    }
+    await excuse(`zenity --question --text="确定要关机吗？"`, {});
+    excuse("shutdown -h now", {});
     return;
   }
   if (result == "󰚰 Update") {

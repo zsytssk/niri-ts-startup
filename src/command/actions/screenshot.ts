@@ -16,6 +16,7 @@ export async function screenshot() {
 export async function selectWindow() {
   const workspaces = state.workspaces;
   const windows = [...state.windows]
+    .filter(Boolean)
     .map((item) => {
       const workspace = workspaces.get(item[1].workspace_id);
       return {
