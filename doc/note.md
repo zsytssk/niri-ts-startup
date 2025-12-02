@@ -1,6 +1,11 @@
 ## 2025-11-27 10:40:49
 
-switchScreen is_active workspace 会有些问题
+- @ques window 有些问题 ->
+  - 像是在 loop 的过程中被删除了?
+
+### end
+
+switchScreen is_active workspace 会有些问题 `windows.delete(id);`
 
 ## 2025-11-10 09:00:33
 

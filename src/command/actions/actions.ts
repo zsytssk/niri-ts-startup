@@ -42,14 +42,17 @@ export async function actions(req: Request) {
         await excuse("fcitx5-remote -o");
       }
       break;
-    case "switch-screen":
-      switchScreen();
+    case "switch-screen-prev":
+      switchScreen(-1);
+      break;
+    case "switch-screen-next":
+      switchScreen(1);
       break;
     case "pick-color":
       const str = (await excuse("niri msg pick-color")) as string;
       const lines = str.split("\n");
       const color = lines[1]?.split(": ")[1];
-      await excuse(`echo "${color}" | wl-copy`);
+      await excuse(`echo -n "${color}" | wl-copy`);
       break;
     case "reset-state":
       resetState();

@@ -2,7 +2,7 @@ import { state } from "../../..";
 import { niriSendActionArrSequence } from "../../utils/niri-client";
 
 let isSwitch = false;
-export async function switchScreen() {
+export async function switchScreen(changeSpace: number) {
   const { outputs, workspaces, currentWorkspaceId } = state;
   const curOutput = workspaces.get(currentWorkspaceId!)?.output;
   if (!curOutput || isSwitch) {
@@ -10,9 +10,12 @@ export async function switchScreen() {
   }
   isSwitch = true;
   const curIndex = [...outputs].findIndex((item) => item == curOutput);
-  let nextIndex = curIndex + 1;
+  let nextIndex = curIndex + changeSpace;
   if (nextIndex >= outputs.size) {
     nextIndex = 0;
+  }
+  if (nextIndex < 0) {
+    nextIndex = outputs.size - 1;
   }
   const nextOutput = [...outputs][nextIndex];
   const curOutputWorkspaces = [] as any[];
@@ -50,8 +53,16 @@ export async function switchScreen() {
         },
       },
     ];
-    if (item.is_active) {
+    if (item.is_focused) {
       actions.push({
+        FocusWorkspace: {
+          reference: {
+            Id: item.id,
+          },
+        },
+      });
+    } else if (item.is_active) {
+      actions.unshift({
         FocusWorkspace: {
           reference: {
             Id: item.id,

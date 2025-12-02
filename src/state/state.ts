@@ -115,6 +115,7 @@ export function NiriState() {
     for (const item of listeners) {
       item(action!, obj);
     }
+    // console.log(`test:>`, JSON.stringify(obj));
     switch (action) {
       case "WorkspacesChanged":
         workspaces.clear();
