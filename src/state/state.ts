@@ -1,3 +1,4 @@
+import { excuse } from "../utils/exec";
 import { niriEventStream } from "../utils/niri-client";
 
 export type NiriStateType = ReturnType<typeof NiriState>;
@@ -19,6 +20,34 @@ export function NiriState() {
   /** @todo-reset 记录每个window的workspace 位置, workspace 的 output 位置 */
   const originWorkspaceInfo = new Map<string, OriginWorkspaceInfo>();
   const originWindowInfo = new Map<string, OriginWindowInfo>();
+
+  const outputsChange = async (workspaces: any[]) => {
+    const newOutputs = new Set(workspaces.map((item: any) => item.output));
+    if (newOutputs.size === outputs.size) {
+      let isSame = true;
+      for (const item of newOutputs) {
+        if (!outputs.has(item as string)) {
+          isSame = false;
+          break;
+        }
+      }
+      if (isSame) {
+        return;
+      }
+    }
+    try {
+      const outputsStr = await excuse("niri msg --json outputs");
+      const outputObj = JSON.parse(outputsStr as string);
+      const outputArr = Object.keys(outputObj).map((key) => outputObj[key]);
+      outputArr.sort(
+        (a, b) => a.logical.x - b.logical.x || a.logical.y - b.logical.y
+      );
+      outputs.clear();
+      for (const item of outputArr) {
+        outputs.add(item.name);
+      }
+    } catch {}
+  };
 
   const addWindow = (window: any) => {
     windows.set(window.id, window);
@@ -65,9 +94,6 @@ export function NiriState() {
 
   const addWorkspace = (workspace: any) => {
     workspaces.set(workspace.id, workspace);
-    if (!outputs.has(workspace.output)) {
-      outputs.add(workspace.output);
-    }
     if (!originWorkspaceInfo.has(workspace.id)) {
       originWorkspaceInfo.set(workspace.id, {
         output: workspace.output,
@@ -118,8 +144,8 @@ export function NiriState() {
     // console.log(`test:>`, JSON.stringify(obj));
     switch (action) {
       case "WorkspacesChanged":
+        outputsChange(obj.WorkspacesChanged.workspaces);
         workspaces.clear();
-        outputs.clear();
         for (const item of obj.WorkspacesChanged.workspaces || []) {
           addWorkspace(item);
         }
