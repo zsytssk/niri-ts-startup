@@ -1,5 +1,6 @@
 import { excuse } from "../../utils/exec";
 import { niriSendAction } from "../../utils/niri-client";
+import { getCurWindow } from "./get-cur-window";
 import { focusNextWindow } from "./next-window";
 import { powerActions } from "./powerActions";
 import { resetState } from "./reset-state";
@@ -8,9 +9,12 @@ import { switchScreen } from "./switch-screen";
 
 export async function actions(req: Request) {
   const data = await req.json(); // 解析 JSON body
-  const { action } = data as Record<string, any>;
+  const { name } = data as Record<string, any>;
 
-  switch (action) {
+  switch (name) {
+    case "get-cur-window":
+      return getCurWindow(data as Record<string, any>);
+      break;
     case "power-actions":
       await powerActions();
       break;

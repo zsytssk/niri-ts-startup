@@ -1,6 +1,6 @@
-import { state } from "../..";
-import { useWorkspaceWindows } from "../state/useStateHook";
-import { excuse } from "../utils/exec";
+import { state } from "../../..";
+import { useWorkspaceWindows } from "../../state/useStateHook";
+import { excuse } from "../../utils/exec";
 
 const bind = new Map<string, boolean>();
 function bindActiveWindowChange(output: string, signal: number) {
@@ -22,8 +22,7 @@ function bindActiveWindowChange(output: string, signal: number) {
   });
 }
 
-export async function getCurWindow(req: Request) {
-  const data = await req.json(); // 解析 JSON body
+export async function getCurWindow(data: Record<string, any>) {
   const { output, signal } = data as Record<string, any>;
   bindActiveWindowChange(output, signal);
   const getWorkspaceWindows = useWorkspaceWindows(state);

@@ -1,6 +1,6 @@
 import Bun from "bun";
 import { actions } from "./src/command/actions/actions";
-import { getCurWindow } from "./src/command/getCurWindow";
+import { getCurWindow } from "./src/command/actions/get-cur-window";
 import { runApp } from "./src/command/runApp";
 import { Spad } from "./src/command/spad";
 import { NiriState } from "./src/state/state";
@@ -40,24 +40,24 @@ function bunServe() {
         case "/spad":
           await spad(req);
           break;
-        case "/actions":
-          await actions(req);
+        case "/action":
+          const res = await actions(req);
+          if (res) {
+            return new Response(res, {
+              status: 200,
+            });
+          }
           break;
         case "/runApp":
           await runApp(req);
           break;
-        case "/getCurWindow":
-          const title = await getCurWindow(req);
-          return new Response(title, {
-            status: 200,
-          });
         default:
-          return new Response(JSON.stringify(state.getState()), {
-            status: 200,
-          });
+          break;
       }
 
-      return new Response("OK", { status: 200 });
+      return new Response(JSON.stringify(state.getState()), {
+        status: 200,
+      });
       //  return new Response("404 Not Found", { status: 404 });
     },
   });
