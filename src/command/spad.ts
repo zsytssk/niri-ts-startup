@@ -111,7 +111,6 @@ export function Spad(state: NiriStateType) {
             reference: { Name: SpadWorkspaceName },
           },
         },
-        { sleep: 0.1 },
         {
           ToggleWindowFloating: { id: item.id },
         },

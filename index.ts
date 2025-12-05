@@ -42,7 +42,7 @@ function bunServe() {
           break;
         case "/action":
           const res = await actions(req);
-          if (res) {
+          if (res !== undefined) {
             return new Response(res, {
               status: 200,
             });

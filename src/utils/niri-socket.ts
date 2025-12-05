@@ -37,12 +37,10 @@ export function NiriSocket() {
     });
 
     client.on("error", (err) => {
-      status = "connecting";
       scheduleReconnect();
     });
 
     client.on("close", () => {
-      status = "connecting";
       scheduleReconnect();
     });
   };
@@ -51,6 +49,7 @@ export function NiriSocket() {
     if (!shouldConnect) {
       return;
     }
+    status = "connecting";
     if (reconnectTimer) return; // 已经在等待中
     reconnectTimer = setTimeout(() => {
       reconnectTimer = undefined;

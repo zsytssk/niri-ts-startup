@@ -17,7 +17,6 @@ export function NiriState() {
   let currentWorkspaceId: number | undefined = undefined;
   let overviewOpen = false;
   const listeners = new Set<(name: string, data: any) => void>();
-  /** @todo-reset 记录每个window的workspace 位置, workspace 的 output 位置 */
   const originWorkspaceInfo = new Map<string, OriginWorkspaceInfo>();
   const originWindowInfo = new Map<string, OriginWindowInfo>();
 
@@ -51,11 +50,11 @@ export function NiriState() {
 
   const addWindow = (window: any) => {
     windows.set(window.id, window);
-    if (window.is_focused) {
-      setTimeout(() => {
-        setCurWindowId(window.id);
-      });
-    }
+    // if (window.is_focused) {
+    //   setTimeout(() => {
+    //     setCurWindowId(window.id);
+    //   });
+    // }
     if (!originWindowInfo.has(window.id)) {
       originWindowInfo.set(window.id, {
         workspace: window.workspace_id,
