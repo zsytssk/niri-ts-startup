@@ -33,7 +33,7 @@ await main();
 
 function bunServe() {
   Bun.serve({
-    port: 6321,
+    port: 6322,
     fetch: async (req: Request) => {
       const url = new URL(req.url);
       switch (url.pathname) {
