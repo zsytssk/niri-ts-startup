@@ -14,4 +14,17 @@ To run:
 bun run index.ts
 ```
 
-This project was created using `bun init` in bun v1.2.23. [Bun](https://bun.com) is a fast all-in-one JavaScript runtime.
+you can run this script in niri config
+
+```
+spawn-sh-at-startup "bun xxx/niri-ts-startup/index.ts"
+```
+
+## bind for niri shortcut
+
+```
+Alt+5  hotkey-overlay-title="Run spad chatgpt" {  spawn-sh "curl -X POST http://127.0.0.1:6321/spad -d '{\"name\":\"chatgpt\"}'"; }
+Mod+T hotkey-overlay-title="Open a Terminal: ghostty" {  spawn-sh "curl -X POST http://127.0.0.1:6321/runApp -d '{\"app_id\":\"com.mitchellh.ghostty\",\"cmd\":\"ghostty\"}'"; }
+Mod+Shift+Ctrl+K { spawn-sh "curl -X POST http://127.0.0.1:6321/action -d '{\"name\":\"switch-screen-prev\"}'"; }
+Mod+Shift+Ctrl+J { spawn-sh "curl -X POST http://127.0.0.1:6321/action -d '{\"name\":\"switch-screen-next\"}'"; }
+```
